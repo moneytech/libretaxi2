@@ -35,15 +35,16 @@ func (repo *Repository) FindUser(userId int64) *objects.User {
 func (repo *Repository) SaveUser(user *objects.User) {
 	// Upsert syntax: https://stackoverflow.com/questions/1109061/insert-on-duplicate-update-in-postgresql
 	// Geo populate syntax: https://gis.stackexchange.com/questions/145007/creating-geometry-from-lat-lon-in-table-using-postgis/145009
-	_, err := repo.db.Query(`INSERT INTO users ("userId", "menuId", "username", "firstName", "lastName", "lat", "lon")
-		VALUES ($1, $2, $3, $4, $5, $6, $7)
+	_, err := repo.db.Query(`INSERT INTO users ("userId", "menuId", "username", "firstName", "lastName", "lat", "lon", "geom")
+		VALUES ($1, $2, $3, $4, $5, $6, $7, ST_SetSRID(ST_MakePoint($7, $6), 4326))
 		ON CONFLICT ("userId") DO UPDATE
 		  SET "menuId" = $2,
 		      "username"=$3,
 		      "firstName"=$4,
 		      "lastName"=$5,
 		      "lat" = $6,
-		      "lon" = $7
+		      "lon" = $7,
+		      "geom" = ST_SetSRID(ST_MakePoint($7, $6), 4326)
 		  `, user.UserId, user.MenuId, user.Username, user.FirstName, user.LastName, user.Lat, user.Lon)
 
 	if err != nil {
@@ -54,7 +55,7 @@ func (repo *Repository) SaveUser(user *objects.User) {
 }
 
 func (repo *Repository) SaveNewPost(post *objects.Post) {
-	_, err := repo.db.Query(`INSERT INTO posts ("userId", "text", "lat", "lon") VALUES ($1, $2, $3, $4)`,
+	_, err := repo.db.Query(`INSERT INTO posts ("userId", "text", "lat", "lon", "geom") VALUES ($1, $2, $3, $4, ST_SetSRID(ST_MakePoint($4, $3), 4326))`,
 		post.UserId, post.Text, post.Lat, post.Lon)
 
 	if err != nil {
