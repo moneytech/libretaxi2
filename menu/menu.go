@@ -38,6 +38,14 @@ func HandleMessage(context *context.Context, userId int64, message *tgbotapi.Mes
 
 		if message.Text == "/start" {
 			user.MenuId = objects.Menu_Init
+			message.Text = ""
+			context.Repo.SaveUser(user)
+		}
+
+		if message.Text == "/cancel" {
+			user.MenuId = objects.Menu_Feed
+			message.Text = ""
+			context.Repo.SaveUser(user)
 		}
 
 		previousState = user.MenuId

@@ -6,6 +6,7 @@ import (
 	"libretaxi/context"
 	"libretaxi/validation"
 	"log"
+	"strings"
 )
 
 type PostMenuHandler struct {
@@ -16,10 +17,7 @@ func (handler *PostMenuHandler) Handle(user *objects.User, context *context.Cont
 
 	if len(message.Text) == 0 {
 
-		msg := tgbotapi.NewMessage(user.UserId, "Send text starting with 🚗 or 👋 in the following format (you can use your own language):")
-		context.Bot.Send(msg)
-
-		msg = tgbotapi.NewMessage(user.UserId, "=== DRIVER TEXT EXAMPLE: ===")
+		msg := tgbotapi.NewMessage(user.UserId, "Send text starting with 🚗 or 👋 in the following format (you can use your own language), or /cancel, examples:")
 		context.Bot.Send(msg)
 
 		msg = tgbotapi.NewMessage(user.UserId, `🚗 Driver looking for hitcher
@@ -28,9 +26,6 @@ Drop Off: anywhere except town
 Date: today
 Time: now
 Payment: cash, venmo`)
-		context.Bot.Send(msg)
-
-		msg = tgbotapi.NewMessage(user.UserId, "=== PASSENGER TEXT EXAMPLE: ===")
 		context.Bot.Send(msg)
 
 		msg = tgbotapi.NewMessage(user.UserId, `👋🏻 Hitcher looking for driver
@@ -52,15 +47,21 @@ Pax: 1`)
 			return
 		}
 
-		// TODO:
-		// save text
-		// inform users
-		msg := tgbotapi.NewMessage(user.UserId, "OK")
-		context.Bot.Send(msg)
-	}
+		post := &objects.Post{
+			UserId: user.UserId,
+			Text: strings.TrimSpace(message.Text),
+			Lat: user.Lat,
+			Lon: user.Lon,
+		}
 
-	//user.MenuId = objects.Menu_AskLocation
-	//context.Repo.SaveUser(user)
+		context.Repo.SaveNewPost(post);
+
+		msg := tgbotapi.NewMessage(user.UserId, "✅ Sent to users around you (25km)")
+		context.Bot.Send(msg)
+
+		user.MenuId = objects.Menu_Feed
+		context.Repo.SaveUser(user)
+	}
 }
 
 func NewPostMenu() *PostMenuHandler {

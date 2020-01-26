@@ -50,6 +50,17 @@ func (repo *Repository) SaveUser(user *objects.User) {
 	}
 }
 
+func (repo *Repository) SaveNewPost(post *objects.Post) {
+	_, err := repo.db.Query(`INSERT INTO posts ("userId", "text", "lat", "lon") VALUES ($1, $2, $3, $4)`,
+		post.UserId, post.Text, post.Lat, post.Lon)
+
+	if err != nil {
+		log.Println(err)
+	} else {
+		log.Println("Post saved")
+	}
+}
+
 func NewRepository(db *sql.DB) *Repository {
 	repo := &Repository{db: db}
 	return repo
