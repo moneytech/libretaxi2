@@ -10,21 +10,24 @@ import (
 type FeedMenuHandler struct {
 }
 
+func getKeyboard() tgbotapi.ReplyKeyboardMarkup {
+	keyboard := tgbotapi.NewReplyKeyboard(
+		tgbotapi.NewKeyboardButtonRow(
+			tgbotapi.NewKeyboardButton("🔍 Search"),
+			tgbotapi.NewKeyboardButton("🌎 Set location"),
+		),
+	)
+	keyboard.OneTimeKeyboard = true
+	return keyboard
+}
+
 func (handler *FeedMenuHandler) Handle(user *objects.User, context *context.Context, message *tgbotapi.Message) {
 	log.Println("Feed menu")
 
 	if len(message.Text) == 0 {
 
-		keyboard := tgbotapi.NewReplyKeyboard(
-			tgbotapi.NewKeyboardButtonRow(
-				tgbotapi.NewKeyboardButton("🔍 Search"),
-				tgbotapi.NewKeyboardButton("🌎 Set location"),
-			),
-		)
-		keyboard.OneTimeKeyboard = true
-
 		msg := tgbotapi.NewMessage(user.UserId, "You'll see new posts here. Use 🔍 to search for a 🚗 driver or 🤵 passenger.")
-		msg.ReplyMarkup = keyboard
+		msg.ReplyMarkup = getKeyboard()
 		context.Bot.Send(msg)
 
 	} else if message.Text == "🔍 Search" {
@@ -35,6 +38,7 @@ func (handler *FeedMenuHandler) Handle(user *objects.User, context *context.Cont
 	} else {
 
 		msg := tgbotapi.NewMessage(user.UserId, "😕 Can't understand your choice")
+		msg.ReplyMarkup = getKeyboard()
 		context.Bot.Send(msg)
 
 	}
