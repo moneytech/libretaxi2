@@ -14,6 +14,8 @@ type User struct {
 	UserId int64
 	MenuId MenuId
 	Username string
+	FirstName string
+	LastName string
 	Lat float64
 	Lon float64
 }

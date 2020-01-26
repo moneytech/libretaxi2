@@ -5,8 +5,10 @@
 create table if not exists users
 (
     "userId" bigint not null,
-    "username" text,
     "menuId" int,
+    "username" text,
+    "firstName" text,
+    "lastName" text,
     "lat" double precision,
 	"lon" double precision,
 	"geom" geometry(POINT, 4326),

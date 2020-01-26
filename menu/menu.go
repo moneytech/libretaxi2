@@ -36,9 +36,13 @@ func HandleMessage(context *context.Context, userId int64, message *tgbotapi.Mes
 			}
 		}
 
-		// Save username if it's there and changed
-		if message.From != nil && len(message.From.UserName) > 0 && message.From.UserName != user.Username {
-			user.Username = message.Chat.UserName
+		// Save recent user information
+		if message.From != nil  {
+
+			user.Username = message.From.UserName
+			user.FirstName = message.From.FirstName
+			user.LastName = message.From.LastName
+
 			context.Repo.SaveUser(user)
 		}
 
