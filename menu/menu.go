@@ -28,12 +28,20 @@ func HandleMessage(context *context.Context, userId int64, message *tgbotapi.Mes
 	for isStateChanged(context, previousState, userId) == true {
 		user := context.Repo.FindUser(userId)
 
+		// Init user if it's not present
 		if user == nil {
 			user = &objects.User{
 				UserId: userId,
 				MenuId: objects.Menu_Init,
 			}
 		}
+
+		// Save username if it's there and changed
+		if message.From != nil && len(message.From.UserName) > 0 && message.From.UserName != user.Username {
+			user.Username = message.Chat.UserName
+			context.Repo.SaveUser(user)
+		}
+
 		//fmt.Printf("%+v\n", message.Location)
 
 		if message.Text == "/start" {
