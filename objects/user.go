@@ -16,6 +16,6 @@ type User struct {
 	Username string
 	FirstName string
 	LastName string
-	Lat float64
 	Lon float64
+	Lat float64
 }
