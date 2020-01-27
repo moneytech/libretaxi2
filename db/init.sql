@@ -1,5 +1,5 @@
 -- drop index idx_created_at_utc_posts;
--- drop index users_geom_idx;
+-- drop index users_geog_idx;
 -- drop table posts;
 -- drop table users;
 
@@ -12,13 +12,13 @@ create table if not exists users
     "lastName" text,
 	"lon" double precision,
     "lat" double precision,
-	"geom" geometry(POINT, 4326),
+	"geog" geography(POINT, 4326),
 	"createdAtUtc" timestamp without time zone not null default (now() at time zone 'utc'),
 
     primary key ("userId")
 );
 
-create index if not exists users_geom_idx on users using gist(geom);
+create index if not exists users_geog_idx on users using gist(geog);
 
 create table if not exists posts
 (
@@ -27,7 +27,7 @@ create table if not exists posts
     "text" text,
 	"lon" double precision,
     "lat" double precision,
-	"geom" geometry(POINT, 4326),
+	"geog" geography(POINT, 4326),
 	"createdAtUtc" timestamp without time zone not null default (now() at time zone 'utc')
 );
 
