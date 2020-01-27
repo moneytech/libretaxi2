@@ -35,7 +35,7 @@ func (repo *Repository) FindUser(userId int64) *objects.User {
 func (repo *Repository) SaveUser(user *objects.User) {
 	// Upsert syntax: https://stackoverflow.com/questions/1109061/insert-on-duplicate-update-in-postgresql
 	// Geo populate syntax: https://gis.stackexchange.com/questions/145007/creating-geometry-from-lat-lon-in-table-using-postgis/145009
-	_, err := repo.db.Query(`INSERT INTO users ("userId", "menuId", "username", "firstName", "lastName", "lon", "lat", "geom")
+	result, err := repo.db.Query(`INSERT INTO users ("userId", "menuId", "username", "firstName", "lastName", "lon", "lat", "geom")
 		VALUES ($1, $2, $3, $4, $5, $6, $7, ST_SetSRID(ST_MakePoint($7, $6), 4326))
 		ON CONFLICT ("userId") DO UPDATE
 		  SET "menuId" = $2,
@@ -46,6 +46,7 @@ func (repo *Repository) SaveUser(user *objects.User) {
 		      "lat" = $7,
 		      "geom" = ST_SetSRID(ST_MakePoint($6, $7), 4326)
 		  `, user.UserId, user.MenuId, user.Username, user.FirstName, user.LastName, user.Lon, user.Lat)
+	defer result.Close()
 
 	if err != nil {
 		log.Println(err)
@@ -55,14 +56,38 @@ func (repo *Repository) SaveUser(user *objects.User) {
 }
 
 func (repo *Repository) SaveNewPost(post *objects.Post) {
-	_, err := repo.db.Query(`INSERT INTO posts ("userId", "text", "lon", "lat", "geom") VALUES ($1, $2, $3, $4, ST_SetSRID(ST_MakePoint($3, $4), 4326))`,
+	result, err := repo.db.Query(`INSERT INTO posts ("userId", "text", "lon", "lat", "geom") VALUES ($1, $2, $3, $4, ST_SetSRID(ST_MakePoint($3, $4), 4326))`,
 		post.UserId, post.Text, post.Lat, post.Lon)
+	defer result.Close()
 
 	if err != nil {
 		log.Println(err)
 	} else {
 		log.Println("Post saved")
 	}
+}
+
+func (repo *Repository) UserIdsAround(lon float64, lat float64) (userIds []int64) {
+	result, err := repo.db.Query(`select "userId" from users, (select ST_SetSRID(ST_MakePoint($1, $2))) as c(x) where ST_DWithin(c.x, "geom", 25000)`,
+		lon, lat)
+	defer result.Close()
+
+	if err != nil {
+		log.Println(err)
+		return nil
+	}
+
+	for result.Next() {
+		var userId int64
+		err := result.Scan(&userId)
+		if err != nil {
+			userIds = append(userIds, userId)
+		} else {
+			log.Println("Error getting userId")
+		}
+	}
+	log.Printf("Found %d users around\n", len(userIds))
+	return userIds
 }
 
 func NewRepository(db *sql.DB) *Repository {

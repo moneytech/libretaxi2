@@ -14,8 +14,8 @@ type AskLocationMenuHandler struct {
 }
 
 func (handler *AskLocationMenuHandler) saveLocation() {
-	handler.user.Lat = handler.message.Location.Latitude
 	handler.user.Lon = handler.message.Location.Longitude
+	handler.user.Lat = handler.message.Location.Latitude
 	handler.context.Repo.SaveUser(handler.user)
 }
 

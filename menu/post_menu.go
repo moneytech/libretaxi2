@@ -1,6 +1,7 @@
 package menu
 
 import (
+	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"libretaxi/context"
 	"libretaxi/objects"
@@ -10,10 +11,25 @@ import (
 )
 
 type PostMenuHandler struct {
+	user *objects.User
+	context *context.Context
+}
+
+func (handler *PostMenuHandler) informUsersAround(lon float64, lat float64, text string) {
+	userIds := handler.context.Repo.UserIdsAround(lon, lat)
+	textWithContacts := fmt.Sprintf("%s\n\nvia @%s", text, handler.user.Username)
+
+	for i, _ := range userIds {
+		userId := userIds[i]
+		handler.context.Bot.Send(tgbotapi.NewMessage(userId, textWithContacts))
+	}
 }
 
 func (handler *PostMenuHandler) Handle(user *objects.User, context *context.Context, message *tgbotapi.Message) {
 	log.Println("Post menu")
+
+	handler.user = user
+	handler.context = context
 
 	if len(message.Text) == 0 {
 
@@ -47,14 +63,18 @@ Pax: 1`)
 			return
 		}
 
+		cleanText := strings.TrimSpace(message.Text)
+
 		post := &objects.Post{
 			UserId: user.UserId,
-			Text: strings.TrimSpace(message.Text),
-			Lat: user.Lat,
+			Text: cleanText,
 			Lon: user.Lon,
+			Lat: user.Lat,
 		}
 
 		context.Repo.SaveNewPost(post);
+
+		handler.informUsersAround(post.Lon, post.Lat, cleanText)
 
 		msg := tgbotapi.NewMessage(user.UserId, "✅ Sent to users around you (25km)")
 		context.Bot.Send(msg)
