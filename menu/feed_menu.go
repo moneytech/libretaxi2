@@ -14,7 +14,7 @@ func getKeyboard() tgbotapi.ReplyKeyboardMarkup {
 	keyboard := tgbotapi.NewReplyKeyboard(
 		tgbotapi.NewKeyboardButtonRow(
 			tgbotapi.NewKeyboardButton("🔍 Search"),
-			tgbotapi.NewKeyboardButton("🌎 Set location"),
+			tgbotapi.NewKeyboardButtonLocation("🌎 Set location"),
 		),
 	)
 	keyboard.OneTimeKeyboard = true
@@ -24,7 +24,7 @@ func getKeyboard() tgbotapi.ReplyKeyboardMarkup {
 func (handler *FeedMenuHandler) Handle(user *objects.User, context *context.Context, message *tgbotapi.Message) {
 	log.Println("Feed menu")
 
-	if len(message.Text) == 0 {
+	if len(message.Text) == 0 && message.Location == nil {
 
 		msg := tgbotapi.NewMessage(user.UserId, "You'll see new posts here. Use 🔍 to search for a 🚗 driver or 🤵 passenger.")
 		msg.ReplyMarkup = getKeyboard()
@@ -34,6 +34,16 @@ func (handler *FeedMenuHandler) Handle(user *objects.User, context *context.Cont
 
 		user.MenuId = objects.Menu_Post
 		context.Repo.SaveUser(user)
+
+	} else if message.Location != nil {
+
+		user.Lon = message.Location.Longitude
+		user.Lat = message.Location.Latitude
+		context.Repo.SaveUser(user)
+
+		msg := tgbotapi.NewMessage(user.UserId, "👌 Location updated")
+		msg.ReplyMarkup = getKeyboard()
+		context.Bot.Send(msg)
 
 	} else {
 
