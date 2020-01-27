@@ -1,4 +1,5 @@
 -- drop index idx_created_at_utc_posts;
+-- drop index idx_user_id_and_created_at_utc;
 -- drop index users_geog_idx;
 -- drop table posts;
 -- drop table users;
@@ -32,3 +33,4 @@ create table if not exists posts
 );
 
 create index if not exists idx_created_at_utc_posts on "posts"("createdAtUtc");
+create index if not exists idx_user_id_and_created_at_utc on "posts"("userId", "createdAtUtc");
