@@ -17,11 +17,21 @@ type PostMenuHandler struct {
 
 func (handler *PostMenuHandler) informUsersAround(lon float64, lat float64, text string) {
 	userIds := handler.context.Repo.UserIdsAround(lon, lat)
-	textWithContacts := fmt.Sprintf("%s\n\nvia @%s", text, handler.user.Username)
+
+	textWithContacts := ""
+
+	if len(handler.user.Username) == 0 {
+		userTextContact := fmt.Sprintf("[%s %s](tg://user?id=%d)", handler.user.FirstName, handler.user.LastName, handler.user.UserId)
+		textWithContacts = fmt.Sprintf("%s\n\nvia %s", text, userTextContact)
+	} else {
+		textWithContacts = fmt.Sprintf("%s\n\nvia @%s", text, handler.user.Username)
+	}
 
 	for i, _ := range userIds {
 		userId := userIds[i]
-		handler.context.Bot.Send(tgbotapi.NewMessage(userId, textWithContacts))
+		msg := tgbotapi.NewMessage(userId, textWithContacts)
+		msg.ParseMode = "MarkdownV2"
+		handler.context.Bot.Send(msg)
 	}
 }
 
