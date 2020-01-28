@@ -9,6 +9,7 @@ import (
 type TextValidation struct {
 	emptyCnt uint32
 	totalCnt uint32
+	viaCnt uint32
 }
 
 func(validation *TextValidation) Validate(text string) (error string) {
@@ -57,9 +58,12 @@ func(validation *TextValidation) Validate(text string) (error string) {
 	for i := range lines {
 		line := strings.TrimSpace(lines[i])
 
-		if len(strings.TrimSpace(line)) == 0 {
+		if len(line) == 0 {
 			validation.emptyCnt++
 		} else {
+			if strings.HasPrefix(line, "via ") {
+				validation.viaCnt++
+			}
 			validation.totalCnt++
 		}
 	}
@@ -74,6 +78,10 @@ func(validation *TextValidation) Validate(text string) (error string) {
 
 	if validation.totalCnt < 5 {
 		return fmt.Sprintf("🚫 At least 5 lines please (you have %d)", validation.totalCnt)
+	}
+
+	if validation.viaCnt > 0 {
+		return "🚫 Do not include \"via\", it will be added automatically"
 	}
 
 	return ""
