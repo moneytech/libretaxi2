@@ -18,4 +18,6 @@ type User struct {
 	LastName string
 	Lon float64
 	Lat float64
+	LanguageCode string
+	ReportCnt int
 }

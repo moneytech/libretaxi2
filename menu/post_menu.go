@@ -80,6 +80,7 @@ Pax: 1`)
 			Text: cleanText,
 			Lon: user.Lon,
 			Lat: user.Lat,
+			ReportCnt: 0,
 		}
 
 		context.Repo.SaveNewPost(post);

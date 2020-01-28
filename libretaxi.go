@@ -52,6 +52,11 @@ func main() {
 			continue
 		}
 
+		// Ignore the case where message comes from a chat, not from user. We do not support chats.
+		if update.Message.From == nil {
+			continue
+		}
+
 		log.Printf("[%d - %s] %s", update.Message.Chat.ID, update.Message.From.UserName, update.Message.Text)
 
 		menu.HandleMessage(context, update.Message.Chat.ID, update.Message)

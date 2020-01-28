@@ -14,6 +14,8 @@ create table if not exists users
 	"lon" double precision,
     "lat" double precision,
 	"geog" geography(POINT, 4326),
+	"languageCode" text,
+	"reportCnt" int default(0),
 	"createdAtUtc" timestamp without time zone not null default (now() at time zone 'utc'),
 
     primary key ("userId")
@@ -29,6 +31,7 @@ create table if not exists posts
 	"lon" double precision,
     "lat" double precision,
 	"geog" geography(POINT, 4326),
+	"reportCnt" int default(0),
 	"createdAtUtc" timestamp without time zone not null default (now() at time zone 'utc')
 );
 

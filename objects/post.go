@@ -6,5 +6,6 @@ type Post struct {
 	Text string
 	Lon float64
 	Lat float64
+	ReportCnt int
 }
 

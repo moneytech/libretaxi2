@@ -33,6 +33,7 @@ func HandleMessage(context *context.Context, userId int64, message *tgbotapi.Mes
 			user = &objects.User{
 				UserId: userId,
 				MenuId: objects.Menu_Init,
+				ReportCnt: 0,
 			}
 		}
 
@@ -42,6 +43,7 @@ func HandleMessage(context *context.Context, userId int64, message *tgbotapi.Mes
 			user.Username = message.From.UserName
 			user.FirstName = message.From.FirstName
 			user.LastName = message.From.LastName
+			user.LanguageCode = message.From.LanguageCode
 
 			context.Repo.SaveUser(user)
 		}
