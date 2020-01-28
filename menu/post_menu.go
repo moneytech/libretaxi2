@@ -41,7 +41,15 @@ func (handler *PostMenuHandler) Handle(user *objects.User, context *context.Cont
 	handler.user = user
 	handler.context = context
 
-	if len(message.Text) == 0 {
+	if context.Repo.UserPostedRecently(user.UserId) {
+
+		msg := tgbotapi.NewMessage(user.UserId, "🕙 Wait for 5 minutes")
+		context.Bot.Send(msg)
+
+		user.MenuId = objects.Menu_Feed
+		context.Repo.SaveUser(user)
+
+	} else if len(message.Text) == 0 {
 
 		msg := tgbotapi.NewMessage(user.UserId, "Send text starting with 🚗 or 👋 in the following format (you can use your own language), or /cancel, examples:")
 		context.Bot.Send(msg)

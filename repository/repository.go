@@ -93,6 +93,15 @@ func (repo *Repository) UserIdsAround(lon float64, lat float64) (userIds []int64
 	return userIds
 }
 
+func (repo *Repository) UserPostedRecently(userId int64) bool {
+	count := 0
+	err := repo.db.QueryRow(`select count("postId") from posts where "userId" = $1 and "createdAtUtc" >= (now() at time zone 'utc') - interval '5 minutes'`, userId).Scan(&count)
+	if err != nil {
+		log.Println("Error getting the number of recent posts")
+	}
+	return count != 0
+}
+
 func NewRepository(db *sql.DB) *Repository {
 	repo := &Repository{db: db}
 	return repo
