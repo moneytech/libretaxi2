@@ -58,19 +58,19 @@ func (handler *PostMenuHandler) Handle(user *objects.User, context *context.Cont
 
 	} else if len(message.Text) == 0 {
 
-		msg := tgbotapi.NewMessage(user.UserId, "Send text starting with 🚗 or 👋 in the following format (you can use your own language), or /cancel, examples:")
+		msg := tgbotapi.NewMessage(user.UserId, "Copy & paste text starting with 🚗 or 👋 in the following format (you can use your own language), or /cancel, examples:")
 		context.Bot.Send(msg)
 
-		msg = tgbotapi.NewMessage(user.UserId, `🚗 Driver looking for hitcher
-Pick Up: foobar reservoir/nearby
-Drop Off: anywhere except town
+		msg = tgbotapi.NewMessage(user.UserId, `🚗 Driver, looking for passenger(s)
+Pick up: foobar square
+Drop off: airport
 Date: today
 Time: now
 Payment: cash, venmo`)
 		context.Bot.Send(msg)
 
-		msg = tgbotapi.NewMessage(user.UserId, `👋🏻 Hitcher looking for driver
-Pick up: 48a foobar st, Oakland
+		msg = tgbotapi.NewMessage(user.UserId, `👋🏻 Passenger, looking for driver
+Pick up: foobar st, 42
 Drop off: downtown
 Date: today
 Time: now

@@ -13,7 +13,7 @@ type FeedMenuHandler struct {
 func getKeyboard() tgbotapi.ReplyKeyboardMarkup {
 	keyboard := tgbotapi.NewReplyKeyboard(
 		tgbotapi.NewKeyboardButtonRow(
-			tgbotapi.NewKeyboardButton("🔍 Search"),
+			tgbotapi.NewKeyboardButton("Find 🚗 or 👋"),
 			tgbotapi.NewKeyboardButtonLocation("🌎 Set location"),
 		),
 	)
@@ -26,11 +26,11 @@ func (handler *FeedMenuHandler) Handle(user *objects.User, context *context.Cont
 
 	if len(message.Text) == 0 && message.Location == nil {
 
-		msg := tgbotapi.NewMessage(user.UserId, "You'll see new posts here. Use 🔍 to search for a 🚗 driver or 🤵 passenger.")
+		msg := tgbotapi.NewMessage(user.UserId, "You'll see 🚗 drivers and 👋 passengers here.")
 		msg.ReplyMarkup = getKeyboard()
 		context.Bot.Send(msg)
 
-	} else if message.Text == "🔍 Search" {
+	} else if message.Text == "Find 🚗 or 👋" {
 
 		user.MenuId = objects.Menu_Post
 		context.Repo.SaveUser(user)
