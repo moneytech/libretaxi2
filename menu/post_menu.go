@@ -15,7 +15,7 @@ type PostMenuHandler struct {
 	context *context.Context
 }
 
-func (handler *PostMenuHandler) informUsersAround(lon float64, lat float64, text string) {
+func (handler *PostMenuHandler) informUsersAround(lon float64, lat float64, text string, postId int64) {
 	userIds := handler.context.Repo.UserIdsAround(lon, lat)
 
 	textWithContacts := ""
@@ -31,6 +31,13 @@ func (handler *PostMenuHandler) informUsersAround(lon float64, lat float64, text
 		userId := userIds[i]
 		msg := tgbotapi.NewMessage(userId, textWithContacts)
 		msg.ParseMode = "MarkdownV2"
+
+		reportKeyboard := tgbotapi.NewInlineKeyboardMarkup(
+			tgbotapi.NewInlineKeyboardRow(
+				tgbotapi.NewInlineKeyboardButtonData("☝️️Report ⚠️",fmt.Sprintf("{'action':'report','postId':%d}", postId)),
+			),
+		)
+		msg.ReplyMarkup = reportKeyboard
 		handler.context.Bot.Send(msg)
 	}
 }
@@ -93,7 +100,7 @@ Pax: 1`)
 
 		context.Repo.SaveNewPost(post);
 
-		handler.informUsersAround(post.Lon, post.Lat, cleanText)
+		handler.informUsersAround(post.Lon, post.Lat, cleanText, 0) // TODO: get post id
 
 		msg := tgbotapi.NewMessage(user.UserId, "✅ Sent to users around you (25km)")
 		context.Bot.Send(msg)

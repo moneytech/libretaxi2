@@ -48,18 +48,31 @@ func main() {
 	updates, _ := context.Bot.GetUpdatesChan(u)
 
 	for update := range updates {
-		if update.Message == nil { // ignore any non-Message Updates
-			continue
+		if update.Message != nil {
+
+			// Ignore the case where message comes from a chat, not from user. We do not support chats.
+			if update.Message.From == nil {
+				continue
+			}
+
+			log.Printf("[%d - %s] %s", update.Message.Chat.ID, update.Message.From.UserName, update.Message.Text)
+			menu.HandleMessage(context, update.Message.Chat.ID, update.Message)
+
+		} else if update.CallbackQuery != nil {
+
+			cb := update.CallbackQuery
+			context.Bot.AnswerCallbackQuery(tgbotapi.NewCallback(cb.ID, "👌 Reported, thanks!!!"))
+
+			emptyKeyboard := tgbotapi.NewInlineKeyboardMarkup([]tgbotapi.InlineKeyboardButton{})
+			removeButton := tgbotapi.NewEditMessageReplyMarkup(cb.Message.Chat.ID, cb.Message.MessageID, emptyKeyboard)
+			log.Printf("%+v\n", removeButton)
+
+			_, err := context.Bot.Send(removeButton)
+			if err != nil {
+				log.Print(err)
+			}
 		}
 
-		// Ignore the case where message comes from a chat, not from user. We do not support chats.
-		if update.Message.From == nil {
-			continue
-		}
-
-		log.Printf("[%d - %s] %s", update.Message.Chat.ID, update.Message.From.UserName, update.Message.Text)
-
-		menu.HandleMessage(context, update.Message.Chat.ID, update.Message)
 
 		//msg := tgbotapi.NewMessage(update.Message.Chat.ID, update.Message.Text)
 		//msg.ReplyToMessageID = update.Message.MessageID
