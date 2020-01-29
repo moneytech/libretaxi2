@@ -13,19 +13,11 @@ type Repository struct {
 func (repo *Repository) FindUser(userId int64) *objects.User {
 	user := &objects.User{}
 
-	rows, err := repo.db.Query(`select "userId", "menuId", "username", "firstName", "lastName", "lon", "lat", "languageCode", "reportCnt" from users where "userId" = $1 limit 1`, userId)
+	err := repo.db.QueryRow(`select "userId", "menuId", "username", "firstName", "lastName", "lon", "lat", "languageCode", "reportCnt" from users where "userId" = $1 limit 1`,
+		userId).Scan(&user.UserId, &user.MenuId, &user.Username, &user.FirstName, &user.LastName, &user.Lon, &user.Lat, &user.LanguageCode, &user.ReportCnt)
+
 	if err != nil {
-		log.Fatal(err)
-	}
-	defer rows.Close()
-
-	cnt := 0
-	for rows.Next() {
-		cnt++
-		rows.Scan(&user.UserId, &user.MenuId, &user.Username, &user.FirstName, &user.LastName, &user.Lon, &user.Lat, &user.LanguageCode, &user.ReportCnt)
-	}
-
-	if cnt == 0 {
+		log.Println(err)
 		return nil
 	}
 
@@ -57,8 +49,31 @@ func (repo *Repository) SaveUser(user *objects.User) {
 	}
 }
 
-func (repo *Repository) SaveNewPost(post *objects.Post) {
-	err := repo.db.QueryRow(`INSERT INTO posts ("userId", "text", "lon", "lat", "geog", "reportCnt") VALUES ($1, $2, $3, $4, ST_SetSRID(ST_MakePoint($3, $4), 4326), $5) RETURNING "postId"`,
+func (repo *Repository) FindPost(postId int64) *objects.Post {
+	post := &objects.Post{}
+
+	err := repo.db.QueryRow(`select "postId", "userId", "text", "lon", "lat", "reportCnt" from posts where "postId" = $1 limit 1`,
+		postId).Scan(&post.PostId, &post.UserId, &post.Text, &post.Lon, &post.Lat, &post.ReportCnt)
+
+	if err != nil {
+		log.Println(err)
+		return nil
+	}
+
+	return post
+}
+
+func (repo *Repository) SavePost(post *objects.Post) {
+	err := repo.db.QueryRow(`INSERT INTO posts ("userId", "text", "lon", "lat", "geog", "reportCnt")
+		VALUES ($1, $2, $3, $4, ST_SetSRID(ST_MakePoint($3, $4), 4326), $5)
+		ON CONFLICT ("postId") DO UPDATE
+			SET "userId" = $1,
+			    "text" = $2,
+			    "lon" = $3,
+			    "lat" = $4,
+			    "geog" = ST_SetSRID(ST_MakePoint($3, $4), 4326),
+			    "reportCnt" = $5
+		RETURNING "postId"`,
 		post.UserId, post.Text, post.Lat, post.Lon, post.ReportCnt).Scan(&post.PostId)
 
 	if err != nil {

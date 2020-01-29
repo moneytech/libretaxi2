@@ -34,11 +34,15 @@ func (handler *PostMenuHandler) informUsersAround(lon float64, lat float64, text
 
 		reportKeyboard := tgbotapi.NewInlineKeyboardMarkup(
 			tgbotapi.NewInlineKeyboardRow(
-				tgbotapi.NewInlineKeyboardButtonData("☝️️Report ⚠️",fmt.Sprintf("{'action':'report_post','id':%d}", postId)),
+				tgbotapi.NewInlineKeyboardButtonData("☝️️Report ⚠️",fmt.Sprintf("{\"Action\":\"REPORT_POST\",\"Id\":%d}", postId)),
 			),
 		)
 		msg.ReplyMarkup = reportKeyboard
-		handler.context.Bot.Send(msg)
+		_, err := handler.context.Bot.Send(msg)
+
+		if err != nil {
+			log.Println(err)
+		}
 	}
 }
 
@@ -98,7 +102,7 @@ Pax: 1`)
 			ReportCnt: 0,
 		}
 
-		context.Repo.SaveNewPost(post);
+		context.Repo.SavePost(post);
 
 		handler.informUsersAround(post.Lon, post.Lat, cleanText, post.PostId)
 

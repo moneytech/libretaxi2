@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"github.com/go-telegram-bot-api/telegram-bot-api"
 	_ "github.com/lib/pq" // important
+	"libretaxi/callback"
 	"libretaxi/config"
 	"libretaxi/context"
 	"libretaxi/menu"
@@ -62,18 +63,17 @@ func main() {
 
 			cb := update.CallbackQuery
 			context.Bot.AnswerCallbackQuery(tgbotapi.NewCallback(cb.ID, "👌 Reported"))
-			log.Print(cb.Data)
 
 			emptyKeyboard := tgbotapi.NewInlineKeyboardMarkup([]tgbotapi.InlineKeyboardButton{})
 			removeButton := tgbotapi.NewEditMessageReplyMarkup(cb.Message.Chat.ID, cb.Message.MessageID, emptyKeyboard)
-			log.Printf("%+v\n", removeButton)
 
 			_, err := context.Bot.Send(removeButton)
 			if err != nil {
-				log.Print(err)
+				log.Println(err)
 			}
-		}
 
+			callback.NewTgCallbackHandler().Handle(context, cb.Data)
+		}
 
 		//msg := tgbotapi.NewMessage(update.Message.Chat.ID, update.Message.Text)
 		//msg.ReplyToMessageID = update.Message.MessageID
