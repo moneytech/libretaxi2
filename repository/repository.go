@@ -58,9 +58,8 @@ func (repo *Repository) SaveUser(user *objects.User) {
 }
 
 func (repo *Repository) SaveNewPost(post *objects.Post) {
-	result, err := repo.db.Query(`INSERT INTO posts ("userId", "text", "lon", "lat", "geog", "reportCnt") VALUES ($1, $2, $3, $4, ST_SetSRID(ST_MakePoint($3, $4), 4326), $5)`,
-		post.UserId, post.Text, post.Lat, post.Lon, post.ReportCnt)
-	defer result.Close()
+	err := repo.db.QueryRow(`INSERT INTO posts ("userId", "text", "lon", "lat", "geog", "reportCnt") VALUES ($1, $2, $3, $4, ST_SetSRID(ST_MakePoint($3, $4), 4326), $5) RETURNING "postId"`,
+		post.UserId, post.Text, post.Lat, post.Lon, post.ReportCnt).Scan(&post.PostId)
 
 	if err != nil {
 		log.Println(err)
