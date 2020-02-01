@@ -2,8 +2,8 @@ package menu
 
 import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
-	"libretaxi/objects"
 	"libretaxi/context"
+	"libretaxi/objects"
 	"log"
 )
 
@@ -15,7 +15,7 @@ func (handler *InitMenuHandler) Handle(user *objects.User, context *context.Cont
 
 	// Send welcome message
 	msg := tgbotapi.NewMessage(user.UserId, "Welcome to LibreTaxi 2.0")
-	context.Bot.Send(msg)
+	context.Send(msg)
 
 	user.MenuId = objects.Menu_AskLocation
 	context.Repo.SaveUser(user)

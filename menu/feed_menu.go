@@ -2,8 +2,8 @@ package menu
 
 import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
-	"libretaxi/objects"
 	"libretaxi/context"
+	"libretaxi/objects"
 	"log"
 )
 
@@ -28,7 +28,8 @@ func (handler *FeedMenuHandler) Handle(user *objects.User, context *context.Cont
 
 		msg := tgbotapi.NewMessage(user.UserId, "You'll see 🚗 drivers and 👋 passengers here.")
 		msg.ReplyMarkup = getKeyboard()
-		context.Bot.Send(msg)
+
+		context.Send(msg)
 
 	} else if message.Text == "Find 🚗 or 👋" {
 
@@ -43,13 +44,13 @@ func (handler *FeedMenuHandler) Handle(user *objects.User, context *context.Cont
 
 		msg := tgbotapi.NewMessage(user.UserId, "👌 Location updated")
 		msg.ReplyMarkup = getKeyboard()
-		context.Bot.Send(msg)
+		context.Send(msg)
 
 	} else {
 
 		msg := tgbotapi.NewMessage(user.UserId, "😕 Can't understand your choice")
 		msg.ReplyMarkup = getKeyboard()
-		context.Bot.Send(msg)
+		context.Send(msg)
 
 	}
 

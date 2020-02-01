@@ -2,8 +2,8 @@ package menu
 
 import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
-	"libretaxi/objects"
 	"libretaxi/context"
+	"libretaxi/objects"
 	"log"
 )
 
@@ -39,9 +39,10 @@ func (handler *AskLocationMenuHandler) Handle(user *objects.User, context *conte
 			tgbotapi.NewKeyboardButtonLocation("Next"),
 		}
 
-		msg := tgbotapi.NewMessage(user.UserId, "Click \"Next\" (from 📱 mobile phone) to share your location.")
+		msg := tgbotapi.NewMessage(user.UserId, "Click \"Next\" (from mobile phone) to share your location.")
 		msg.ReplyMarkup = tgbotapi.NewReplyKeyboard(buttons)
-		context.Bot.Send(msg)
+
+		context.Send(msg)
 	}
 }
 

@@ -5,6 +5,7 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"libretaxi/context"
 	"libretaxi/objects"
+	"libretaxi/rabbit"
 	"libretaxi/validation"
 	"log"
 	"strings"
@@ -38,11 +39,12 @@ func (handler *PostMenuHandler) informUsersAround(lon float64, lat float64, text
 			),
 		)
 		msg.ReplyMarkup = reportKeyboard
-		_, err := handler.context.Bot.Send(msg)
 
-		if err != nil {
-			log.Println(err)
-		}
+		// Mass-send with lower priority (3 instead of 0)
+		handler.context.RabbitPublish.PublishTgMessage(rabbit.MessageBag{
+			Message: msg,
+			Priority: 3,
+		})
 	}
 }
 
@@ -55,7 +57,7 @@ func (handler *PostMenuHandler) Handle(user *objects.User, context *context.Cont
 	if context.Repo.UserPostedRecently(user.UserId) {
 
 		msg := tgbotapi.NewMessage(user.UserId, "🕙 Wait for 5 minutes")
-		context.Bot.Send(msg)
+		context.Send(msg)
 
 		user.MenuId = objects.Menu_Feed
 		context.Repo.SaveUser(user)
@@ -63,7 +65,7 @@ func (handler *PostMenuHandler) Handle(user *objects.User, context *context.Cont
 	} else if len(message.Text) == 0 {
 
 		msg := tgbotapi.NewMessage(user.UserId, "Copy & paste text starting with 🚗 or 👋 in the following format (you can use your own language), or /cancel, examples:")
-		context.Bot.Send(msg)
+		context.Send(msg)
 
 		msg = tgbotapi.NewMessage(user.UserId, `🚗 Driver looking for passenger(s)
 Pick up: foobar square
@@ -71,7 +73,7 @@ Drop off: airport
 Date: today
 Time: now
 Payment: cash, venmo`)
-		context.Bot.Send(msg)
+		context.Send(msg)
 
 		msg = tgbotapi.NewMessage(user.UserId, `👋🏻 Passenger looking for driver
 Pick up: foobar st, 42
@@ -79,16 +81,16 @@ Drop off: downtown
 Date: today
 Time: now
 Pax: 1`)
-		context.Bot.Send(msg)
-
+		context.Send(msg)
 	} else {
 
 		textValidation := validation.NewTextValidation()
 		error := textValidation.Validate(message.Text)
 
 		if len(error) > 0 {
-			msg := tgbotapi.NewMessage(user.UserId, error)
-			context.Bot.Send(msg)
+			msg := tgbotapi.NewMessage(user.UserId, error + " or /cancel")
+
+			context.Send(msg)
 			return
 		}
 
@@ -107,7 +109,7 @@ Pax: 1`)
 		handler.informUsersAround(post.Lon, post.Lat, cleanText, post.PostId)
 
 		msg := tgbotapi.NewMessage(user.UserId, "✅ Sent to users around you (25km)")
-		context.Bot.Send(msg)
+		context.Send(msg)
 
 		user.MenuId = objects.Menu_Feed
 		context.Repo.SaveUser(user)

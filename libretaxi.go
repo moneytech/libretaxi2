@@ -8,6 +8,7 @@ import (
 	"libretaxi/config"
 	"libretaxi/context"
 	"libretaxi/menu"
+	"libretaxi/rabbit"
 	"libretaxi/repository"
 	"log"
 )
@@ -33,10 +34,10 @@ func initContext() *context.Context {
 	} else {
 		log.Print("Successfully connected to the database...")
 	}
-	db.Query("SELECT 1")
 
 	context.Bot = bot
 	context.Repo = repository.NewRepository(db)
+	context.RabbitPublish = rabbit.NewRabbitClient(config.C().Rabbit_Url, "messages")
 	return context
 }
 
