@@ -65,7 +65,7 @@ func (handler *PostMenuHandler) Handle(user *objects.User, context *context.Cont
 		msg := tgbotapi.NewMessage(user.UserId, "Copy & paste text starting with 🚗 or 👋 in the following format (you can use your own language), or /cancel, examples:")
 		context.Bot.Send(msg)
 
-		msg = tgbotapi.NewMessage(user.UserId, `🚗 Driver, looking for passenger(s)
+		msg = tgbotapi.NewMessage(user.UserId, `🚗 Driver looking for passenger(s)
 Pick up: foobar square
 Drop off: airport
 Date: today
@@ -73,7 +73,7 @@ Time: now
 Payment: cash, venmo`)
 		context.Bot.Send(msg)
 
-		msg = tgbotapi.NewMessage(user.UserId, `👋🏻 Passenger, looking for driver
+		msg = tgbotapi.NewMessage(user.UserId, `👋🏻 Passenger looking for driver
 Pick up: foobar st, 42
 Drop off: downtown
 Date: today
