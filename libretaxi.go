@@ -10,13 +10,14 @@ import (
 	"libretaxi/menu"
 	"libretaxi/rabbit"
 	"libretaxi/repository"
+	"libretaxi/sender"
 	"log"
 )
 
 func initContext() *context.Context {
-	config.Init("libretaxi")
-	log.Printf("Using '%s' telegram token...\n", config.C().Telegram_Token)
-	log.Printf("Using '%s' database connection string...", config.C().Db_Conn_Str)
+	log.Printf("Using '%s' telegram token\n", config.C().Telegram_Token)
+	log.Printf("Using '%s' database connection string", config.C().Db_Conn_Str)
+	log.Printf("Using '%s' RabbitMQ connection string", config.C().Rabbit_Url)
 
 	context := &context.Context{}
 
@@ -32,17 +33,18 @@ func initContext() *context.Context {
 	if err != nil {
 		log.Fatal(err)
 	} else {
-		log.Print("Successfully connected to the database...")
+		log.Print("Successfully connected to the database")
 	}
 
 	context.Bot = bot
 	context.Repo = repository.NewRepository(db)
-	context.RabbitPublish = rabbit.NewRabbitClient(config.C().Rabbit_Url, "messages")
 	return context
 }
 
-func main() {
+// Message producer (app logic)
+func main1() {
 	context := initContext()
+	context.RabbitPublish = rabbit.NewRabbitClient(config.C().Rabbit_Url, "messages")
 
 	u := tgbotapi.NewUpdate(0)
 	u.Timeout = 60
@@ -81,4 +83,23 @@ func main() {
 		//
 		//context.Bot.Send(msg)
 	}
+}
+
+// Message consumer (send to Telegram respecting rate limits)
+func main2() {
+	context := initContext()
+	context.RabbitConsume = rabbit.NewRabbitClient(config.C().Rabbit_Url, "messages")
+
+	s := sender.NewSender(context)
+	s.Start()
+}
+
+func main() {
+	config.Init("libretaxi")
+
+	go main1()
+	go main2()
+
+	forever := make(chan bool)
+	<- forever
 }

@@ -54,7 +54,7 @@ type Handler func(messageBag *MessageBag)
 
 type MessageBag struct {
 	PostId int64 // optional
-	Message tgbotapi.Chattable
+	Message tgbotapi.MessageConfig
 	Priority uint8 // 0..9
 }
 
@@ -215,6 +215,6 @@ func NewRabbitClient(url string, queueName string) *RabbitClient {
 		queueName: queueName,
 	}
 	rabbit.Connect()
-	log.Println("Successfully connected to RabbitMQ...")
+	log.Println("Successfully connected to RabbitMQ")
 	return rabbit
 }
