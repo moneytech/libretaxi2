@@ -59,8 +59,17 @@ func main1() {
 				continue
 			}
 
-			log.Printf("[%d - %s] %s", update.Message.Chat.ID, update.Message.From.UserName, update.Message.Text)
-			menu.HandleMessage(context, update.Message.Chat.ID, update.Message)
+			userId := update.Message.Chat.ID
+
+			// Send welcome link: on first interaction (here) or by mass-send (not implemented yet), but only once per user
+			if context.Repo.ShowCallout(userId, "welcome_2_0_message") {
+				context.Repo.DismissCallout(userId, "welcome_2_0_message")
+
+				context.Send(tgbotapi.NewMessage(userId, "http://blabla.com/"))
+			}
+
+			log.Printf("[%d - %s] %s", userId, update.Message.From.UserName, update.Message.Text)
+			menu.HandleMessage(context, userId, update.Message)
 
 		} else if update.CallbackQuery != nil {
 
@@ -78,7 +87,7 @@ func main1() {
 			callback.NewTgCallbackHandler().Handle(context, cb.Data)
 		}
 
-		//msg := tgbotapi.NewMessage(update.Message.Chat.ID, update.Message.Text)
+		//msg := tgbotapi.NewMessage(userId, update.Message.Text)
 		//msg.ReplyToMessageID = update.Message.MessageID
 		//
 		//context.Bot.Send(msg)

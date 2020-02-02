@@ -116,6 +116,23 @@ func (repo *Repository) UserPostedRecently(userId int64) bool {
 	return count != 0
 }
 
+func (repo *Repository) ShowCallout(userId int64, featureName string) bool {
+	count := 0
+	err := repo.db.QueryRow(`select count("id") from dismissed_feature_callouts where "userId" = $1 and "featureName" = $2`, userId, featureName).Scan(&count)
+	if err != nil {
+		log.Println("Error while querying dismissed feature callouts")
+	}
+	return count == 0
+}
+
+func (repo *Repository) DismissCallout(userId int64, featureName string) {
+	_, err := repo.db.Exec(`insert into dismissed_feature_callouts ("userId", "featureName") values ($1, $2) on conflict ("userId", "featureName") do nothing`, userId, featureName);
+	if err != nil {
+		log.Printf("Error while dismissing feature callout %s for user %d: %s", featureName, userId)
+		log.Println(err)
+	}
+}
+
 func NewRepository(db *sql.DB) *Repository {
 	repo := &Repository{db: db}
 	return repo
