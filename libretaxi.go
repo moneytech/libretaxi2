@@ -65,7 +65,7 @@ func main1() {
 			if context.Repo.ShowCallout(userId, "welcome_2_0_message") {
 				context.Repo.DismissCallout(userId, "welcome_2_0_message")
 
-				context.Send(tgbotapi.NewMessage(userId, "http://blabla.com/"))
+				context.Send(tgbotapi.NewMessage(userId, "https://telegra.ph/LibreTaxi-20---you-will-love-it-02-02"))
 			}
 
 			log.Printf("[%d - %s] %s", userId, update.Message.From.UserName, update.Message.Text)
