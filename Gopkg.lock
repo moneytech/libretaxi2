@@ -37,6 +37,14 @@
   version = "v1.0.0"
 
 [[projects]]
+  branch = "master"
+  digest = "1:2791d3f60ddf94148e2995c19e9849659ff265e9090f5f6cd0a371a076c621de"
+  name = "github.com/jayco/go-emoji-flag"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "01604da018da2b4b5d7755bcf57103232aa848b4"
+
+[[projects]]
   digest = "1:9ff22c26414baf7deaf74f2a788fe7b97666048bcbe346c52cfe823442abbdfb"
   name = "github.com/lib/pq"
   packages = [
@@ -194,6 +202,7 @@
   analyzer-version = 1
   input-imports = [
     "github.com/go-telegram-bot-api/telegram-bot-api",
+    "github.com/jayco/go-emoji-flag",
     "github.com/lib/pq",
     "github.com/spf13/viper",
     "github.com/streadway/amqp",

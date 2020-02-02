@@ -48,3 +48,7 @@
 [[constraint]]
   name = "go.uber.org/ratelimit"
   version = "0.1.0"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/jayco/go-emoji-flag"

@@ -40,7 +40,7 @@ func(validation *TextValidation) Validate(text string) (error string) {
 	}
 
 	if strings.Contains(lowerText, "foobar") {
-		return "🚫 Post again, change \"Pick up\" and \"Drop off\""
+		return "🚫 Post again, change \"From\" and \"To\""
 	}
 
 	if strings.Contains(lowerText, "http") || strings.Contains(lowerText, "ftp://") || strings.Contains(lowerText,"www") {

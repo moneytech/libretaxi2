@@ -3,6 +3,7 @@ package menu
 import (
 	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
+	emoji "github.com/jayco/go-emoji-flag"
 	"libretaxi/context"
 	"libretaxi/objects"
 	"libretaxi/rabbit"
@@ -73,24 +74,30 @@ func (handler *PostMenuHandler) Handle(user *objects.User, context *context.Cont
 
 	} else if len(message.Text) == 0 {
 
-		msg := tgbotapi.NewMessage(user.UserId, "Copy & paste text starting with 🚗 or 👋 in the following format (you can use your own language), or /cancel, examples:")
+		flag := ""
+
+		if len(user.LanguageCode) > 0 {
+			flag = " " + emoji.GetFlag(user.LanguageCode)
+		}
+
+		msg := tgbotapi.NewMessage(user.UserId, fmt.Sprintf("Copy & paste text starting with 🚗 (driver) or 👋 (passenger) in the following format (you can use your own language%s), or /cancel, examples:", flag))
 		context.Send(msg)
 
 		// IMPORTANT! Do not use Markdown'ish symbols here, like (, ), [, ]... because when user copies and pastes the
 		// message below, when username isn't set up, "informUsersAround" method above will turn message into
 		// markdown. If these symbols are present, it will mix up the entire message (probably won't be accepted by Telegram)
 
-		msg = tgbotapi.NewMessage(user.UserId, `🚗 Driver looking for passenger
-Pick up: foobar square
-Drop off: airport
+		msg = tgbotapi.NewMessage(user.UserId, `🚗 Ride offer
+From: foobar square
+To: airport
 Date: today
 Time: now
 Payment: cash, venmo`)
 		context.Send(msg)
 
-		msg = tgbotapi.NewMessage(user.UserId, `👋🏻 Passenger looking for driver
-Pick up: foobar st, 42
-Drop off: downtown
+		msg = tgbotapi.NewMessage(user.UserId, `👋🏻 Ride wanted
+From: foobar st, 42
+To: downtown
 Date: today
 Time: now
 Pax: 1`)
