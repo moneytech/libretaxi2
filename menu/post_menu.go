@@ -31,7 +31,15 @@ func (handler *PostMenuHandler) informUsersAround(lon float64, lat float64, text
 	for i, _ := range userIds {
 		userId := userIds[i]
 		msg := tgbotapi.NewMessage(userId, textWithContacts)
-		msg.ParseMode = "MarkdownV2"
+
+		if len(handler.user.Username) == 0 {
+			// IMPORTANT!
+			// Currently markdown not escaped. It means when a user sends, for example "Looking for passenger(s)",
+			// Telegram will NOT accept this request, it will fail with
+			// Bad Request: can't parse entities: Character '(' is reserved and must be escaped with the preceding '\'
+			// TODO: always escape markdown (user input)
+			msg.ParseMode = "MarkdownV2"
+		}
 
 		reportKeyboard := tgbotapi.NewInlineKeyboardMarkup(
 			tgbotapi.NewInlineKeyboardRow(
@@ -43,6 +51,7 @@ func (handler *PostMenuHandler) informUsersAround(lon float64, lat float64, text
 		// Mass-send with lower priority (3 instead of 0)
 		handler.context.RabbitPublish.PublishTgMessage(rabbit.MessageBag{
 			Message: msg,
+			PostId: postId,
 			Priority: 3,
 		})
 	}
@@ -67,7 +76,11 @@ func (handler *PostMenuHandler) Handle(user *objects.User, context *context.Cont
 		msg := tgbotapi.NewMessage(user.UserId, "Copy & paste text starting with 🚗 or 👋 in the following format (you can use your own language), or /cancel, examples:")
 		context.Send(msg)
 
-		msg = tgbotapi.NewMessage(user.UserId, `🚗 Driver looking for passenger(s)
+		// IMPORTANT! Do not use Markdown'ish symbols here, like (, ), [, ]... because when user copies and pastes the
+		// message below, when username isn't set up, "informUsersAround" method above will turn message into
+		// markdown. If these symbols are present, it will mix up the entire message (probably won't be accepted by Telegram)
+
+		msg = tgbotapi.NewMessage(user.UserId, `🚗 Driver looking for passenger
 Pick up: foobar square
 Drop off: airport
 Date: today

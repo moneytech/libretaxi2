@@ -44,3 +44,7 @@
 [[constraint]]
   branch = "master"
   name = "github.com/streadway/amqp"
+
+[[constraint]]
+  name = "go.uber.org/ratelimit"
+  version = "0.1.0"

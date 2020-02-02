@@ -12,7 +12,10 @@ type Sender struct {
 
 func (s *Sender) Handler(messageBag *rabbit.MessageBag) {
 	log.Printf("Sending message %+v\n", messageBag.Message)
-	s.context.Bot.Send(messageBag.Message)
+	_, err := s.context.Bot.Send(messageBag.Message)
+	if err != nil {
+		log.Printf("Error sending Telegram message: %s\n", err)
+	}
 }
 
 func (s *Sender) Start() {

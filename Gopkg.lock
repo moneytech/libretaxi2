@@ -140,6 +140,17 @@
   version = "v1.0.1"
 
 [[projects]]
+  digest = "1:9d8dd533fab0651b2d03970664d7f57880cfa092e0e3d36e8fdd8e371b65a7d9"
+  name = "go.uber.org/ratelimit"
+  packages = [
+    ".",
+    "internal/clock",
+  ]
+  pruneopts = "UT"
+  revision = "cd1f0abeddc3fe992a7be8d533332897936efbc0"
+  version = "v0.1.0"
+
+[[projects]]
   branch = "master"
   digest = "1:46aee4748419921a611e49842c732b3b8afe6a0926017ad1a68b9d0e11fdd288"
   name = "golang.org/x/sys"
@@ -186,6 +197,7 @@
     "github.com/lib/pq",
     "github.com/spf13/viper",
     "github.com/streadway/amqp",
+    "go.uber.org/ratelimit",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1

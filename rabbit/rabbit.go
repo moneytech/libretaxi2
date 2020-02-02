@@ -39,6 +39,7 @@ import (
 	"encoding/json"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/streadway/amqp"
+	"go.uber.org/ratelimit"
 	"log"
 	"time"
 )
@@ -176,16 +177,19 @@ func (rc *RabbitClient) msgRoutine(f Handler) {
 		break
 	}
 
+	rl := ratelimit.New(28) // per second
+
 	for d := range msgs {
+		log.Println("NEW MESSAGE!")
+
 		messageBag := &MessageBag{}
 		err := json.Unmarshal(d.Body, messageBag)
-
-		// TODO: rate limiting
 
 		if err != nil {
 			log.Println("Error unmarshalling a message")
 			log.Println(err)
 		} else {
+			rl.Take() // IMPORTANT! Apply rate limit here, otherwise we're screwed while mass-sending
 			f(messageBag)
 		}
 
