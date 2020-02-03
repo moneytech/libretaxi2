@@ -17,7 +17,7 @@ type PostMenuHandler struct {
 	context *context.Context
 }
 
-func (handler *PostMenuHandler) postToPublicChannel(text string) {
+func (handler *PostMenuHandler) postToAdminChannel(text string) {
 	msg := tgbotapi.NewMessage(handler.context.Config.Admin_Channel_Chat_Id, text)
 	if len(handler.user.Username) == 0 {
 		msg.ParseMode = "MarkdownV2"
@@ -39,7 +39,7 @@ func (handler *PostMenuHandler) informUsersAround(lon float64, lat float64, text
 
 	// Post to the admin channel first
 
-	handler.postToPublicChannel(textWithContacts)
+	handler.postToAdminChannel(textWithContacts)
 
 	// Post to users around
 
