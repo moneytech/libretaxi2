@@ -75,7 +75,7 @@ func main1() {
 		} else if update.CallbackQuery != nil {
 
 			cb := update.CallbackQuery
-			context.Bot.AnswerCallbackQuery(tgbotapi.NewCallback(cb.ID, "👌 Reported"))
+			context.Bot.AnswerCallbackQuery(tgbotapi.NewCallback(cb.ID, "👌 OK"))
 
 			emptyKeyboard := tgbotapi.NewInlineKeyboardMarkup([]tgbotapi.InlineKeyboardButton{})
 			removeButton := tgbotapi.NewEditMessageReplyMarkup(cb.Message.Chat.ID, cb.Message.MessageID, emptyKeyboard)

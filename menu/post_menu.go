@@ -22,6 +22,13 @@ func (handler *PostMenuHandler) postToAdminChannel(text string) {
 	if len(handler.user.Username) == 0 {
 		msg.ParseMode = "MarkdownV2"
 	}
+	banKeyboard := tgbotapi.NewInlineKeyboardMarkup(
+		tgbotapi.NewInlineKeyboardRow(
+			tgbotapi.NewInlineKeyboardButtonData("☝️ Shadow ban",fmt.Sprintf("{\"Action\":\"SHADOW_BAN\",\"Id\":%d}", handler.user.UserId)),
+		),
+	)
+	msg.ReplyMarkup = banKeyboard
+
 	handler.context.Send(msg)
 }
 

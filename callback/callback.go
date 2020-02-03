@@ -20,10 +20,15 @@ func(callbackHandler *TgCallbackHandler) Handle(context *context.Context, jsonSt
 
 	log.Printf("Action: %s, Id: %d\n", actionData.Action, actionData.Id)
 
-	if actionData.Action == "REPORT_POST" {
+	switch actionData.Action {
+	case "REPORT_POST":
 		post := context.Repo.FindPost(actionData.Id)
 		post.ReportCnt++
 		context.Repo.SavePost(post)
+	case "SHADOW_BAN":
+		user := context.Repo.FindUser(actionData.Id)
+		user.ShadowBanned = true
+		context.Repo.SaveUser(user)
 	}
 }
 
