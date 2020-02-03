@@ -18,6 +18,7 @@ create table if not exists users
 	"geog" geography(POINT, 4326),
 	"languageCode" text,
 	"reportCnt" int default(0),
+	"shadowBanned" boolean default(false),
 	"createdAtUtc" timestamp without time zone not null default (now() at time zone 'utc'),
 
     primary key ("userId")

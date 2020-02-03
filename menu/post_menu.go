@@ -26,8 +26,6 @@ func (handler *PostMenuHandler) postToAdminChannel(text string) {
 }
 
 func (handler *PostMenuHandler) informUsersAround(lon float64, lat float64, text string, postId int64) {
-	userIds := handler.context.Repo.UserIdsAround(lon, lat)
-
 	textWithContacts := ""
 
 	if len(handler.user.Username) == 0 {
@@ -37,11 +35,29 @@ func (handler *PostMenuHandler) informUsersAround(lon float64, lat float64, text
 		textWithContacts = fmt.Sprintf("%s\n\nvia @%s", text, handler.user.Username)
 	}
 
-	// Post to the admin channel first
+	// Post to the admin channel first, do not bother in case of shadow ban
+	if !handler.user.ShadowBanned {
+		handler.postToAdminChannel(textWithContacts)
+	}
 
-	handler.postToAdminChannel(textWithContacts)
+	// In case of shadow ban, post to current user only and return
+	if handler.user.ShadowBanned {
+		msg := tgbotapi.NewMessage(handler.user.UserId, textWithContacts)
+
+		if len(handler.user.Username) == 0 {
+			msg.ParseMode = "MarkdownV2"
+		}
+
+		handler.context.RabbitPublish.PublishTgMessage(rabbit.MessageBag{
+			Message: msg,
+			PostId: postId,
+			Priority: 3,
+		})
+		return
+	}
 
 	// Post to users around
+	userIds := handler.context.Repo.UserIdsAround(lon, lat)
 
 	for i, _ := range userIds {
 		userId := userIds[i]

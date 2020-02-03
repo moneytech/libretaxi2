@@ -34,6 +34,7 @@ func HandleMessage(context *context.Context, userId int64, message *tgbotapi.Mes
 				UserId: userId,
 				MenuId: objects.Menu_Init,
 				ReportCnt: 0,
+				ShadowBanned: false,
 			}
 		}
 

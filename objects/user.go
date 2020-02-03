@@ -20,4 +20,5 @@ type User struct {
 	Lat float64
 	LanguageCode string
 	ReportCnt int
+	ShadowBanned bool
 }
