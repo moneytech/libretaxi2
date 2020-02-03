@@ -9,7 +9,7 @@ type Config struct {
 	Telegram_Token string
 	Db_Conn_Str string
 	Rabbit_Url string
-	Admin_Channel_Username string
+	Admin_Channel_Chat_Id int64
 }
 
 var config Config

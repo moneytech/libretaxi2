@@ -18,7 +18,7 @@ type PostMenuHandler struct {
 }
 
 func (handler *PostMenuHandler) postToPublicChannel(text string) {
-	msg := tgbotapi.NewMessageToChannel("@" + handler.context.Config.Admin_Channel_Username, text)
+	msg := tgbotapi.NewMessage(handler.context.Config.Admin_Channel_Chat_Id, text)
 	if len(handler.user.Username) == 0 {
 		msg.ParseMode = "MarkdownV2"
 	}

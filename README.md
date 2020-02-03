@@ -37,12 +37,13 @@ Init settings for `./libretaxi.yml`:
 telegram_token: YOUR_TOKEN
 db_conn_str: postgres://libretaxi:libretaxi@localhost/libretaxi
 rabbit_url: amqp://127.0.0.1/
-admin_channel_username: libretaxi_all_orders
+admin_channel_chat_id: -1001324105405
 ```
 
-`admin_channel_username` should be specified without "@" sign.
+See https://stackoverflow.com/a/41779623/337085 for how to get id for you private channel.
+You'll need to invite `@get_id_bot` and type `/my_id@get_id_bot`. You'll see chat id.
 
-See https://stackoverflow.com/a/34189698/337085 for how to get admin_chat_id. Basically you need to create your own
+Basically you need to create your own
 private channel where you'll see all orders and will be able to ban users and delete messages.
 
 ## Running
