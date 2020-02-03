@@ -38,6 +38,7 @@ func initContext() *context.Context {
 
 	context.Bot = bot
 	context.Repo = repository.NewRepository(db)
+	context.Config = config.C()
 	return context
 }
 

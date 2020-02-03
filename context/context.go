@@ -2,6 +2,7 @@ package context
 
 import (
 	"github.com/go-telegram-bot-api/telegram-bot-api"
+	"libretaxi/config"
 	"libretaxi/repository"
 	"libretaxi/rabbit"
 )
@@ -11,6 +12,7 @@ type Context struct {
 	Repo *repository.Repository
 	RabbitPublish *rabbit.RabbitClient // for publishing only
 	RabbitConsume *rabbit.RabbitClient // for consuming only
+	Config *config.Config
 }
 
 // drop-in replacement for telegram Send method, posts with highest priority

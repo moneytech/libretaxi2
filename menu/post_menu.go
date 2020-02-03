@@ -17,6 +17,14 @@ type PostMenuHandler struct {
 	context *context.Context
 }
 
+func (handler *PostMenuHandler) postToPublicChannel(text string) {
+	msg := tgbotapi.NewMessageToChannel("@" + handler.context.Config.Admin_Channel_Username, text)
+	if len(handler.user.Username) == 0 {
+		msg.ParseMode = "MarkdownV2"
+	}
+	handler.context.Send(msg)
+}
+
 func (handler *PostMenuHandler) informUsersAround(lon float64, lat float64, text string, postId int64) {
 	userIds := handler.context.Repo.UserIdsAround(lon, lat)
 
@@ -28,6 +36,12 @@ func (handler *PostMenuHandler) informUsersAround(lon float64, lat float64, text
 	} else {
 		textWithContacts = fmt.Sprintf("%s\n\nvia @%s", text, handler.user.Username)
 	}
+
+	// Post to the admin channel first
+
+	handler.postToPublicChannel(textWithContacts)
+
+	// Post to users around
 
 	for i, _ := range userIds {
 		userId := userIds[i]
