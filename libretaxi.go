@@ -49,6 +49,7 @@ func main1() {
 
 	u := tgbotapi.NewUpdate(0)
 	u.Timeout = 60
+	u.Limit = 99
 
 	updates, _ := context.Bot.GetUpdatesChan(u)
 
@@ -87,11 +88,6 @@ func main1() {
 
 			callback.NewTgCallbackHandler().Handle(context, cb.Data)
 		}
-
-		//msg := tgbotapi.NewMessage(userId, update.Message.Text)
-		//msg.ReplyToMessageID = update.Message.MessageID
-		//
-		//context.Bot.Send(msg)
 	}
 }
 

@@ -180,7 +180,6 @@ func (rc *RabbitClient) msgRoutine(f Handler) {
 	rl := ratelimit.New(28) // per second
 
 	for d := range msgs {
-		log.Println("NEW MESSAGE!")
 
 		messageBag := &MessageBag{}
 		err := json.Unmarshal(d.Body, messageBag)
@@ -190,7 +189,7 @@ func (rc *RabbitClient) msgRoutine(f Handler) {
 			log.Println(err)
 		} else {
 			rl.Take() // IMPORTANT! Apply rate limit here, otherwise we're screwed while mass-sending
-			f(messageBag)
+			go f(messageBag)
 		}
 
 		// Ack in any case, we don't want this handler to stuck because of one error
