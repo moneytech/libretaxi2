@@ -27,7 +27,7 @@ Init settings for `./libretaxi.yml`:
 
 ```
 telegram_token: YOUR_TOKEN
-db_conn_str: postgres://libretaxi:libretaxi@localhost/libretaxi
+db_conn_str: postgres://libretaxi:libretaxi@localhost:15432/libretaxi
 rabbit_url: amqp://127.0.0.1/
 admin_channel_chat_id: -1001324105405
 ```

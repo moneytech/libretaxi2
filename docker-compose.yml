@@ -17,7 +17,7 @@ services:
       - POSTGRES_DBNAME=libretaxi
       - POSTGRES_MULTIPLE_EXTENSIONS=postgis,hstore,postgis_topology
     ports:
-      - 127.0.0.1:5432:5432
+      - 127.0.0.1:15432:5432
   rabbit:
     hostname: my-rabbit
     image: rabbitmq:3-management
