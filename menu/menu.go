@@ -1,6 +1,7 @@
 package menu
 
 import (
+	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"libretaxi/context"
 	"libretaxi/objects"
@@ -62,6 +63,8 @@ func HandleMessage(context *context.Context, userId int64, message *tgbotapi.Mes
 			message.Text = ""
 			context.Repo.SaveUser(user)
 		}
+
+		fmt.Println(user.LanguageCode)
 
 		previousState = user.MenuId
 		var handler Handler

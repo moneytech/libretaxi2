@@ -52,3 +52,7 @@
 [[constraint]]
   branch = "master"
   name = "github.com/jayco/go-emoji-flag"
+
+[[constraint]]
+  name = "github.com/leonelquinteros/gotext"
+  version = "1.4.0"

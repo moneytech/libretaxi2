@@ -45,6 +45,17 @@
   revision = "01604da018da2b4b5d7755bcf57103232aa848b4"
 
 [[projects]]
+  digest = "1:c1969ca636a3249ca89cc658fb22280f69bb6f191787b0a2437690daddb25e7d"
+  name = "github.com/leonelquinteros/gotext"
+  packages = [
+    ".",
+    "plurals",
+  ]
+  pruneopts = "UT"
+  revision = "477ce49ddf8f201350f40fdb5ed80a65d155cc33"
+  version = "v1.4.0"
+
+[[projects]]
   digest = "1:9ff22c26414baf7deaf74f2a788fe7b97666048bcbe346c52cfe823442abbdfb"
   name = "github.com/lib/pq"
   packages = [
@@ -203,6 +214,7 @@
   input-imports = [
     "github.com/go-telegram-bot-api/telegram-bot-api",
     "github.com/jayco/go-emoji-flag",
+    "github.com/leonelquinteros/gotext",
     "github.com/lib/pq",
     "github.com/spf13/viper",
     "github.com/streadway/amqp",

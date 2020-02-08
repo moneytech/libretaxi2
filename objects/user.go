@@ -1,5 +1,7 @@
 package objects
 
+import "github.com/leonelquinteros/gotext"
+
 type MenuId int
 
 const (
@@ -21,4 +23,19 @@ type User struct {
 	LanguageCode string
 	ReportCnt int
 	ShadowBanned bool
+	locale *gotext.Locale
+}
+
+func (u *User) Locale() *gotext.Locale {
+	// TODO: init locale in one transaction
+	if u.locale == nil {
+		u.locale = gotext.NewLocale("./locales", "all")
+
+		if u.LanguageCode == "ru" { // || u.LanguageCode == "es" ... etc
+			u.locale.AddDomain(u.LanguageCode)
+		} else {
+			u.locale.AddDomain("en")
+		}
+	}
+	return u.locale
 }

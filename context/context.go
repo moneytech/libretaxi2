@@ -3,8 +3,8 @@ package context
 import (
 	"github.com/go-telegram-bot-api/telegram-bot-api"
 	"libretaxi/config"
-	"libretaxi/repository"
 	"libretaxi/rabbit"
+	"libretaxi/repository"
 )
 
 type Context struct {

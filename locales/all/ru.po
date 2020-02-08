@@ -1,0 +1,8 @@
+msgid "init_menu.welcome"
+msgstr "Добро пожаловать в новую версию Либре-такси!"
+
+msgid "ask_location_menu.click_next"
+msgstr "Нажмите \"Далее\" (с мессенжера в телефоне) чтобы установить локацию."
+
+msgid "ask_location_menu.next_button"
+msgstr "Далее"
