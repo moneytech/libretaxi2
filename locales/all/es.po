@@ -97,3 +97,6 @@ msgstr "🚫 Only 9 max lines please (you have %d)"
 
 msgid "validation.min_lines"
 msgstr "🚫 At least 5 lines please (you have %d)"
+
+msgid "main.welcome_link"
+msgstr "https://telegra.ph/LibreTaxi-20---you-will-love-it-02-02"

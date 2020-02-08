@@ -98,3 +98,5 @@ msgstr "🚫 Девять строк максимум пожалуйста (у �
 msgid "validation.min_lines"
 msgstr "🚫 Надо хотя бы пять строк (у вас %d)"
 
+msgid "main.welcome_link"
+msgstr "https://telegra.ph/Novaya-versiya-Libre-taksi-vam-ponravitsya-02-08"

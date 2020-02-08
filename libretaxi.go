@@ -63,13 +63,6 @@ func main1() {
 
 			userId := update.Message.Chat.ID
 
-			// Send welcome link: on first interaction (here) or by mass-send (not implemented yet), but only once per user
-			if context.Repo.ShowCallout(userId, "welcome_2_0_message") {
-				context.Repo.DismissCallout(userId, "welcome_2_0_message")
-
-				context.Send(tgbotapi.NewMessage(userId, "https://telegra.ph/LibreTaxi-20---you-will-love-it-02-02"))
-			}
-
 			log.Printf("[%d - %s] %s", userId, update.Message.From.UserName, update.Message.Text)
 			menu.HandleMessage(context, userId, update.Message)
 

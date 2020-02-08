@@ -22,6 +22,17 @@ func isStateChanged(context *context.Context, previousState objects.MenuId, user
 	return user.MenuId != previousState
 }
 
+func oneTimeMessages(context *context.Context, user *objects.User) {
+	// Send welcome link: on first interaction (here) or by mass-send (not implemented yet), but only once per user
+	if context.Repo.ShowCallout(user.UserId, "welcome_2_0_message") {
+		context.Repo.DismissCallout(user.UserId, "welcome_2_0_message")
+
+		context.Send(tgbotapi.NewMessage(
+			user.UserId,
+			user.Locale().Get("main.welcome_link")))
+	}
+}
+
 func HandleMessage(context *context.Context, userId int64, message *tgbotapi.Message) {
 	log.Printf("Message: '%s'", message.Text)
 	previousState := objects.Menu_Ban
@@ -49,6 +60,8 @@ func HandleMessage(context *context.Context, userId int64, message *tgbotapi.Mes
 
 			context.Repo.SaveUser(user)
 		}
+
+		oneTimeMessages(context, user)
 
 		//fmt.Printf("%+v\n", message.Location)
 
