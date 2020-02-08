@@ -3,7 +3,6 @@ package menu
 import (
 	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
-	emoji "github.com/jayco/go-emoji-flag"
 	"libretaxi/context"
 	"libretaxi/objects"
 	"libretaxi/rabbit"
@@ -13,7 +12,7 @@ import (
 )
 
 type PostMenuHandler struct {
-	user *objects.User
+	user    *objects.User
 	context *context.Context
 }
 
@@ -24,7 +23,7 @@ func (handler *PostMenuHandler) postToAdminChannel(text string) {
 	}
 	banKeyboard := tgbotapi.NewInlineKeyboardMarkup(
 		tgbotapi.NewInlineKeyboardRow(
-			tgbotapi.NewInlineKeyboardButtonData("☝️ Shadow ban",fmt.Sprintf("{\"Action\":\"SHADOW_BAN\",\"Id\":%d}", handler.user.UserId)),
+			tgbotapi.NewInlineKeyboardButtonData("☝️ Shadow ban", fmt.Sprintf("{\"Action\":\"SHADOW_BAN\",\"Id\":%d}", handler.user.UserId)),
 		),
 	)
 	msg.ReplyMarkup = banKeyboard
@@ -32,14 +31,15 @@ func (handler *PostMenuHandler) postToAdminChannel(text string) {
 	handler.context.Send(msg)
 }
 
-func (handler *PostMenuHandler) informUsersAround(lon float64, lat float64, text string, postId int64) {
+func (handler *PostMenuHandler) informUsersAround(lon float64, lat float64, text string, postId int64, user *objects.User) {
 	textWithContacts := ""
+	via := user.Locale().Get("post_menu.via")
 
 	if len(handler.user.Username) == 0 {
 		userTextContact := fmt.Sprintf("[%s %s](tg://user?id=%d)", handler.user.FirstName, handler.user.LastName, handler.user.UserId)
-		textWithContacts = fmt.Sprintf("%s\n\nvia %s", text, userTextContact)
+		textWithContacts = fmt.Sprintf("%s\n\n%s %s", text, via, userTextContact)
 	} else {
-		textWithContacts = fmt.Sprintf("%s\n\nvia @%s", text, handler.user.Username)
+		textWithContacts = fmt.Sprintf("%s\n\n%s @%s", text, via, handler.user.Username)
 	}
 
 	// Post to the admin channel first, do not bother in case of shadow ban
@@ -56,8 +56,8 @@ func (handler *PostMenuHandler) informUsersAround(lon float64, lat float64, text
 		}
 
 		handler.context.RabbitPublish.PublishTgMessage(rabbit.MessageBag{
-			Message: msg,
-			PostId: postId,
+			Message:  msg,
+			PostId:   postId,
 			Priority: 3,
 		})
 		return
@@ -81,15 +81,16 @@ func (handler *PostMenuHandler) informUsersAround(lon float64, lat float64, text
 
 		reportKeyboard := tgbotapi.NewInlineKeyboardMarkup(
 			tgbotapi.NewInlineKeyboardRow(
-				tgbotapi.NewInlineKeyboardButtonData("☝️️Report ⚠️",fmt.Sprintf("{\"Action\":\"REPORT_POST\",\"Id\":%d}", postId)),
+				tgbotapi.NewInlineKeyboardButtonData(user.Locale().Get("post_menu.report_button"),
+					fmt.Sprintf("{\"Action\":\"REPORT_POST\",\"Id\":%d}", postId)),
 			),
 		)
 		msg.ReplyMarkup = reportKeyboard
 
 		// Mass-send with lower priority (3 instead of 0)
 		handler.context.RabbitPublish.PublishTgMessage(rabbit.MessageBag{
-			Message: msg,
-			PostId: postId,
+			Message:  msg,
+			PostId:   postId,
 			Priority: 3,
 		})
 	}
@@ -103,7 +104,7 @@ func (handler *PostMenuHandler) Handle(user *objects.User, context *context.Cont
 
 	if context.Repo.UserPostedRecently(user.UserId) {
 
-		msg := tgbotapi.NewMessage(user.UserId, "🕙 Wait for 5 minutes")
+		msg := tgbotapi.NewMessage(user.UserId, user.Locale().Get("post_menu.wait"))
 		context.Send(msg)
 
 		user.MenuId = objects.Menu_Feed
@@ -111,41 +112,25 @@ func (handler *PostMenuHandler) Handle(user *objects.User, context *context.Cont
 
 	} else if len(message.Text) == 0 {
 
-		flag := ""
-
-		if len(user.LanguageCode) > 0 {
-			flag = " " + emoji.GetFlag(user.LanguageCode)
-		}
-
-		msg := tgbotapi.NewMessage(user.UserId, fmt.Sprintf("Copy & paste text starting with 🚗 (driver) or 👋 (passenger) in the following format (you can use your own language%s), or /cancel, examples:", flag))
+		msg := tgbotapi.NewMessage(user.UserId, user.Locale().Get("post_menu.copy_and_paste"))
 		context.Send(msg)
 
 		// IMPORTANT! Do not use Markdown'ish symbols here, like (, ), [, ]... because when user copies and pastes the
 		// message below, when username isn't set up, "informUsersAround" method above will turn message into
 		// markdown. If these symbols are present, it will mix up the entire message (probably won't be accepted by Telegram)
 
-		msg = tgbotapi.NewMessage(user.UserId, `🚗 Ride offer
-From: foobar square
-To: airport
-Date: today
-Time: now
-Payment: cash, venmo`)
+		msg = tgbotapi.NewMessage(user.UserId, user.Locale().Get("post_menu.driver_example"))
 		context.Send(msg)
 
-		msg = tgbotapi.NewMessage(user.UserId, `👋🏻 Ride wanted
-From: foobar st, 42
-To: downtown
-Date: today
-Time: now
-Pax: 1`)
+		msg = tgbotapi.NewMessage(user.UserId, user.Locale().Get("post_menu.passenger_example"))
 		context.Send(msg)
 	} else {
 
 		textValidation := validation.NewTextValidation()
-		error := textValidation.Validate(message.Text)
+		error := textValidation.Validate(message.Text, user.Locale())
 
 		if len(error) > 0 {
-			msg := tgbotapi.NewMessage(user.UserId, error + " or /cancel")
+			msg := tgbotapi.NewMessage(user.UserId, error + " " + user.Locale().Get("post_menu.or") + " /cancel")
 
 			context.Send(msg)
 			return
@@ -154,18 +139,18 @@ Pax: 1`)
 		cleanText := strings.TrimSpace(message.Text)
 
 		post := &objects.Post{
-			UserId: user.UserId,
-			Text: cleanText,
-			Lon: user.Lon,
-			Lat: user.Lat,
+			UserId:    user.UserId,
+			Text:      cleanText,
+			Lon:       user.Lon,
+			Lat:       user.Lat,
 			ReportCnt: 0,
 		}
 
-		context.Repo.SavePost(post);
+		context.Repo.SavePost(post)
 
-		handler.informUsersAround(post.Lon, post.Lat, cleanText, post.PostId)
+		handler.informUsersAround(post.Lon, post.Lat, cleanText, post.PostId, user)
 
-		msg := tgbotapi.NewMessage(user.UserId, "✅ Sent to users around you (25km)")
+		msg := tgbotapi.NewMessage(user.UserId, user.Locale().Get("post_menu.sent"))
 		context.Send(msg)
 
 		user.MenuId = objects.Menu_Feed

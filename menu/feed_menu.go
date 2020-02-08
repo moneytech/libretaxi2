@@ -10,11 +10,11 @@ import (
 type FeedMenuHandler struct {
 }
 
-func getKeyboard() tgbotapi.ReplyKeyboardMarkup {
+func getKeyboard(user *objects.User) tgbotapi.ReplyKeyboardMarkup {
 	keyboard := tgbotapi.NewReplyKeyboard(
 		tgbotapi.NewKeyboardButtonRow(
-			tgbotapi.NewKeyboardButton("Find 🚗 or 👋"),
-			tgbotapi.NewKeyboardButtonLocation("🌎 Set location"),
+			tgbotapi.NewKeyboardButton(user.Locale().Get("feed_menu.search_button")),
+			tgbotapi.NewKeyboardButtonLocation(user.Locale().Get("feed_menu.location_button")),
 		),
 	)
 	keyboard.OneTimeKeyboard = true
@@ -26,12 +26,12 @@ func (handler *FeedMenuHandler) Handle(user *objects.User, context *context.Cont
 
 	if len(message.Text) == 0 && message.Location == nil {
 
-		msg := tgbotapi.NewMessage(user.UserId, "You'll see 🚗 drivers and 👋 passengers here.")
-		msg.ReplyMarkup = getKeyboard()
+		msg := tgbotapi.NewMessage(user.UserId, user.Locale().Get("feed_menu.greeting"))
+		msg.ReplyMarkup = getKeyboard(user)
 
 		context.Send(msg)
 
-	} else if message.Text == "Find 🚗 or 👋" {
+	} else if message.Text == user.Locale().Get("feed_menu.search_button") {
 
 		user.MenuId = objects.Menu_Post
 		context.Repo.SaveUser(user)
@@ -42,14 +42,14 @@ func (handler *FeedMenuHandler) Handle(user *objects.User, context *context.Cont
 		user.Lat = message.Location.Latitude
 		context.Repo.SaveUser(user)
 
-		msg := tgbotapi.NewMessage(user.UserId, "👌 Location updated")
-		msg.ReplyMarkup = getKeyboard()
+		msg := tgbotapi.NewMessage(user.UserId, user.Locale().Get("feed_menu.location_changed"))
+		msg.ReplyMarkup = getKeyboard(user)
 		context.Send(msg)
 
 	} else {
 
-		msg := tgbotapi.NewMessage(user.UserId, "😕 Can't understand your choice")
-		msg.ReplyMarkup = getKeyboard()
+		msg := tgbotapi.NewMessage(user.UserId, user.Locale().Get("feed_menu.error"))
+		msg.ReplyMarkup = getKeyboard(user)
 		context.Send(msg)
 
 	}
