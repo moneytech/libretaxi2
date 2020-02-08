@@ -51,12 +51,17 @@ msgstr ""
 "Пассажиров: 1"
 
 # Here is how we check if the user just copied the text or changed it. It's just a string from the previous postings.
+# Note how we have "foobar" in both postings above. It's the magic string, non-existent address, you should think
+# about an address that doesn't exist in your own language. Or you can leave "foobar" if you didn't get it ;)
+# Keep it lowercased!
 msgid "validation.dummy_addr_lowercase"
 msgstr "дубров"
 
 msgid "post_menu.sent"
 msgstr "✅ Отправлено всем в радиусе 25 км"
 
+# "Contact" is a verb here. For example, we'll have a posting where it says "blabla, I'm looking for ride, contact @username".
+# So you're translating this verb "contact" below.
 msgid "post_menu.via"
 msgstr "Контакт: "
 
