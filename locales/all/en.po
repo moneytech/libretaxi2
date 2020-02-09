@@ -2,7 +2,7 @@ msgid "init_menu.welcome"
 msgstr "Welcome to LibreTaxi 2.0!"
 
 msgid "ask_location_menu.click_next"
-msgstr "Click \"Next\" (from mobile phone) to share your location."
+msgstr "Click \"Next\" (from mobile phone) to share your location. Or fake it with 📎 Paperclip -> 📍 Location"
 
 msgid "ask_location_menu.next_button"
 msgstr "Next"
@@ -14,7 +14,7 @@ msgid "feed_menu.search_button"
 msgstr "Find 🚗 or 👋"
 
 msgid "feed_menu.location_button"
-msgstr "🌎 Change location"
+msgstr "📍 Change location"
 
 msgid "feed_menu.location_changed"
 msgstr "👌 Location updated"

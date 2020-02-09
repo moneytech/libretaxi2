@@ -2,7 +2,7 @@ msgid "init_menu.welcome"
 msgstr "Bienvenido a LibreTaxi 2.0!"
 
 msgid "ask_location_menu.click_next"
-msgstr "Pulse \"Siguiente\" (desde teléfono celular) para compartir su ubicación"
+msgstr "Pulse \"Siguiente\" (desde teléfono celular) para compartir su ubicación. O puede 📎 Clip -> 📍 Ubicación para mejor privacidad."
 
 msgid "ask_location_menu.next_button"
 msgstr "Siguiente"
@@ -14,7 +14,7 @@ msgid "feed_menu.search_button"
 msgstr "Encontrar 🚗 o 👋"
 
 msgid "feed_menu.location_button"
-msgstr "🌎 Cambiar ubicación"
+msgstr "📍 Cambiar ubicación"
 
 msgid "feed_menu.location_changed"
 msgstr "👌 Ubicación actualizada"

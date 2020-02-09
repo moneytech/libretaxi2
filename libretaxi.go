@@ -68,6 +68,9 @@ func main1() {
 
 		} else if update.CallbackQuery != nil {
 
+			// A couple of places where we directly interact with Telegram API without a queue. Not a good thing,
+			// must be enqueued as well.
+
 			cb := update.CallbackQuery
 			context.Bot.AnswerCallbackQuery(tgbotapi.NewCallback(cb.ID, "👌 OK"))
 
@@ -78,6 +81,7 @@ func main1() {
 			if err != nil {
 				log.Println(err)
 			}
+
 
 			callback.NewTgCallbackHandler().Handle(context, cb.Data)
 		}

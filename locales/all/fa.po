@@ -14,7 +14,7 @@ msgid "feed_menu.search_button"
 msgstr "Find 🚗 or 👋"
 
 msgid "feed_menu.location_button"
-msgstr "🌎 Change location"
+msgstr "📍 Change location"
 
 msgid "feed_menu.location_changed"
 msgstr "👌 Location updated"

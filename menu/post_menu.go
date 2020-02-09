@@ -58,7 +58,7 @@ func (handler *PostMenuHandler) informUsersAround(lon float64, lat float64, text
 		handler.context.RabbitPublish.PublishTgMessage(rabbit.MessageBag{
 			Message:  msg,
 			PostId:   postId,
-			Priority: 3,
+			Priority: 5,
 		})
 		return
 	}
@@ -91,7 +91,7 @@ func (handler *PostMenuHandler) informUsersAround(lon float64, lat float64, text
 		handler.context.RabbitPublish.PublishTgMessage(rabbit.MessageBag{
 			Message:  msg,
 			PostId:   postId,
-			Priority: 3,
+			Priority: 5, // lower priority, max is 9 (highest)
 		})
 	}
 }
@@ -148,7 +148,7 @@ func (handler *PostMenuHandler) Handle(user *objects.User, context *context.Cont
 
 		context.Repo.SavePost(post)
 
-		handler.informUsersAround(post.Lon, post.Lat, cleanText, post.PostId, user)
+		go handler.informUsersAround(post.Lon, post.Lat, cleanText, post.PostId, user)
 
 		msg := tgbotapi.NewMessage(user.UserId, user.Locale().Get("post_menu.sent"))
 		context.Send(msg)
