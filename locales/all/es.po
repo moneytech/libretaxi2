@@ -34,7 +34,7 @@ msgstr "Copiar & pegar texto que empieza con 🚗 (conductor) o 👋 (pasajero) 
 
 msgid "post_menu.driver_example"
 msgstr ""
-"🚗 Ride offer\n"
+"🚗 Viaje ofrecido\n"
 "Desde: foobar\n"
 "Hasta: Aerpuerto\n"
 "Fecha: hoy\n"
@@ -43,7 +43,7 @@ msgstr ""
 
 msgid "post_menu.passenger_example"
 msgstr ""
-"👋 Ride wanted\n"
+"👋 Viaje deseado\n"
 "Desde: foobar, 42\n"
 "Hasta: El centro\n"
 "Fecha: hoy\n"
@@ -99,4 +99,4 @@ msgid "validation.min_lines"
 msgstr "🚫 Al menos 5 líneas por favor (tienes %d)"
 
 msgid "main.welcome_link"
-msgstr "https://telegra.ph/LibreTaxi-20---you-will-love-it-02-02"
+msgstr "https://telegra.ph/LibreTaxi-20---te-va-a-enamorar-02-09"
