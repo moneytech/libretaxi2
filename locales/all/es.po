@@ -38,7 +38,7 @@ msgstr ""
 "Desde: foobar\n"
 "Hasta: Aerpuerto\n"
 "Fecha: hoy\n"
-"Hora: ahora\n"
+"Horario: ahora\n"
 "Pago: efectivo, venmo"
 
 msgid "post_menu.passenger_example"
@@ -47,7 +47,7 @@ msgstr ""
 "Desde: foobar, 42\n"
 "Hasta: El centro\n"
 "Fecha: hoy\n"
-"Hora: ahora\n"
+"Horario: ahora\n"
 "Pasajero: 1"
 
 # Here is how we check if the user just copied the text or changed it. It's just a string from the previous postings.
