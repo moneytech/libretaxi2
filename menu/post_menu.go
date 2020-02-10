@@ -8,6 +8,7 @@ import (
 	"libretaxi/rabbit"
 	"libretaxi/validation"
 	"log"
+	"math/rand"
 	"strings"
 )
 
@@ -58,7 +59,7 @@ func (handler *PostMenuHandler) informUsersAround(lon float64, lat float64, text
 		handler.context.RabbitPublish.PublishTgMessage(rabbit.MessageBag{
 			Message:  msg,
 			PostId:   postId,
-			Priority: 5,
+			Priority: 0, // lowest priority for shadow banned :-P TODO: make it everywhere
 		})
 		return
 	}
@@ -87,11 +88,12 @@ func (handler *PostMenuHandler) informUsersAround(lon float64, lat float64, text
 		)
 		msg.ReplyMarkup = reportKeyboard
 
-		// Mass-send with lower priority (3 instead of 0)
+		// Mass-send with lower priority (lower than 100, more than 1).
+		// Random priority below is to ensure the normal distrubution of messages between multiple users at the same point of time.
 		handler.context.RabbitPublish.PublishTgMessage(rabbit.MessageBag{
 			Message:  msg,
 			PostId:   postId,
-			Priority: 5, // lower priority, max is 9 (highest)
+			Priority: uint8(rand.Intn(99) + 1), // random priority 1..100
 		})
 	}
 }

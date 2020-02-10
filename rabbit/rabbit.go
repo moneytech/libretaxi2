@@ -80,7 +80,7 @@ func (rc *RabbitClient) Connect() {
 
 		args := make(amqp.Table)
 		args["x-message-ttl"] = int32(1000 * 60 * 60 * 24 * 10) // 10 days
-		args["x-max-priority"] = uint8(9)
+		args["x-max-priority"] = int32(255)
 
 		_, err = rc.channel.QueueDeclare(
 			rc.queueName,

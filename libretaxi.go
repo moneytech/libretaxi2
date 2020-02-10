@@ -12,6 +12,8 @@ import (
 	"libretaxi/repository"
 	"libretaxi/sender"
 	"log"
+	"math/rand"
+	"time"
 )
 
 func initContext() *context.Context {
@@ -98,6 +100,7 @@ func main2() {
 }
 
 func main() {
+	rand.Seed(time.Now().UnixNano())
 	config.Init("libretaxi")
 
 	go main1()

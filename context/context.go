@@ -19,6 +19,6 @@ type Context struct {
 func (context * Context) Send(message tgbotapi.MessageConfig) {
 	context.RabbitPublish.PublishTgMessage(rabbit.MessageBag{
 		Message: message,
-		Priority: 9, // highest priority, lowest is 0
+		Priority: 255, // highest priority, lowest is 0
 	})
 }
