@@ -43,7 +43,7 @@ func(validation *TextValidation) Validate(text string, locale *gotext.Locale) (e
 		return "🚫 No links please"
 	}
 
-	var re = regexp.MustCompile(`\w\.\w{2,5}`)
+	var re = regexp.MustCompile(`\w\.[a-z]{2,5}`)
 
 	if len(re.FindAllString(lowerText, -1)) > 0 {
 		return "🚫 No domains please"
