@@ -31,7 +31,7 @@ func (u *User) Locale() *gotext.Locale {
 	if u.locale == nil {
 		u.locale = gotext.NewLocale("./locales", "all")
 
-		if u.LanguageCode == "ru" { // || u.LanguageCode == "es" ... etc
+		if u.LanguageCode == "ru" || u.LanguageCode == "es" { // ... etc
 			u.locale.AddDomain(u.LanguageCode)
 		} else {
 			u.locale.AddDomain("en")

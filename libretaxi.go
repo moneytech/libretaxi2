@@ -3,7 +3,9 @@ package main
 import (
 	"database/sql"
 	"github.com/go-telegram-bot-api/telegram-bot-api"
+	"github.com/leonelquinteros/gotext"
 	_ "github.com/lib/pq" // important
+	"go.uber.org/ratelimit"
 	"libretaxi/callback"
 	"libretaxi/config"
 	"libretaxi/context"
@@ -99,12 +101,75 @@ func main2() {
 	s.Start()
 }
 
+func getLocale(languageCode string) *gotext.Locale {
+	locale := gotext.NewLocale("./locales", "all")
+
+	if languageCode == "ru" || languageCode == "es" {
+		locale.AddDomain(languageCode)
+	} else {
+		locale.AddDomain("en")
+	}
+	return locale
+}
+
+func massAnnounce() {
+	context := &context.Context{}
+	db, err := sql.Open("postgres", config.C().Db_Conn_Str)
+	if err != nil {
+		log.Fatal(err)
+	} else {
+		log.Print("Successfully connected to the database")
+	}
+
+	context.Repo = repository.NewRepository(db)
+	context.Config = config.C()
+	context.RabbitPublish = rabbit.NewRabbitClient(config.C().Rabbit_Url, "messages")
+
+	var userId int64
+	var languageCode string
+
+	rows, err := db.Query("select \"userId\", \"languageCode\" from users")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+
+	rl := ratelimit.New(5) // don't load DB too much
+
+	for rows.Next() {
+		err := rows.Scan(&userId, &languageCode)
+		if err == nil && context.Repo.ShowCallout(userId, "welcome_2_0_message") {
+
+			locale := getLocale(languageCode)
+			link := locale.Get("main.welcome_link")
+			text := link + " 👉👉👉 /start 👈👈👈"
+			msg := tgbotapi.NewMessage(userId, text)
+
+			context.RabbitPublish.PublishTgMessage(rabbit.MessageBag{
+				Message: msg,
+				Priority: 0, // LOWEST
+			})
+
+			log.Println("Mass sending to ", userId, languageCode)
+
+			context.Repo.DismissCallout(userId, "welcome_2_0_message")
+
+			rl.Take()
+		}
+	}
+	err = rows.Err()
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
 func main() {
 	rand.Seed(time.Now().UnixNano())
 	config.Init("libretaxi")
 
 	go main1()
 	go main2()
+	go massAnnounce()
 
 	forever := make(chan bool)
 	<- forever
