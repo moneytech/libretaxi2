@@ -8,7 +8,7 @@ msgid "ask_location_menu.next_button"
 msgstr "Seguinte"
 
 msgid "feed_menu.greeting"
-msgstr "Ofertas de 🚗 motoristas e 👋 passageiros serão publicadas aqui. @libretaxi_all 👀"
+msgstr "Ofertas de 🚗 motoristas e 👋 passageiros serão publicadas aqui."
 
 msgid "feed_menu.search_button"
 msgstr "Encontrar 🚗 ou 👋"
@@ -58,7 +58,7 @@ msgid "validation.dummy_addr_lowercase"
 msgstr "fulano"
 
 msgid "post_menu.sent"
-msgstr "✅ Enviado para usuários na zona (25km)"
+msgstr "✅ Enviado para usuários na zona (25km) and to @libretaxi_all"
 
 # "Contact" is a verb here. For example, we'll have a posting where it says "blabla, I'm looking for ride, contact @username".
 # So you're translating this verb "contact" below.
