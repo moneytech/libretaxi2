@@ -30,6 +30,7 @@ telegram_token: YOUR_TOKEN
 db_conn_str: postgres://libretaxi:libretaxi@localhost:15432/libretaxi
 rabbit_url: amqp://127.0.0.1:8079/
 admin_channel_chat_id: -1001324105405
+public_channel_chat_id: -1001470847849
 ```
 
 Admin channel is the place where you shadow ban spamers. 

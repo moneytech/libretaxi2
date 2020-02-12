@@ -8,7 +8,7 @@ msgid "ask_location_menu.next_button"
 msgstr "Seguinte"
 
 msgid "feed_menu.greeting"
-msgstr "Ofertas de 🚗 motoristas e 👋 passageiros serão publicadas aqui."
+msgstr "Ofertas de 🚗 motoristas e 👋 passageiros serão publicadas aqui. @libretaxi_all 👀"
 
 msgid "feed_menu.search_button"
 msgstr "Encontrar 🚗 ou 👋"

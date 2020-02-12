@@ -169,7 +169,7 @@ func main() {
 
 	go main1()
 	go main2()
-	go massAnnounce()
+	//go massAnnounce()
 
 	forever := make(chan bool)
 	<- forever

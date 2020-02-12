@@ -10,6 +10,7 @@ type Config struct {
 	Db_Conn_Str string
 	Rabbit_Url string
 	Admin_Channel_Chat_Id int64
+	Public_Channel_Chat_Id int64
 }
 
 var config Config

@@ -32,6 +32,14 @@ func (handler *PostMenuHandler) postToAdminChannel(text string) {
 	handler.context.Send(msg)
 }
 
+func (handler *PostMenuHandler) postToPublicChannel(text string) {
+	msg := tgbotapi.NewMessage(handler.context.Config.Public_Channel_Chat_Id, text + "\nVia 👉 @libretaxi_bot")
+	if len(handler.user.Username) == 0 {
+		msg.ParseMode = "MarkdownV2"
+	}
+	handler.context.Send(msg)
+}
+
 func (handler *PostMenuHandler) informUsersAround(lon float64, lat float64, text string, postId int64, user *objects.User) {
 	textWithContacts := ""
 	via := user.Locale().Get("post_menu.via")
@@ -46,6 +54,7 @@ func (handler *PostMenuHandler) informUsersAround(lon float64, lat float64, text
 	// Post to the admin channel first, do not bother in case of shadow ban
 	if !handler.user.ShadowBanned {
 		handler.postToAdminChannel(textWithContacts)
+		handler.postToPublicChannel(textWithContacts)
 	}
 
 	// In case of shadow ban, post to current user only and return
