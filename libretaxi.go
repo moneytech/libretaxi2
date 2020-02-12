@@ -128,7 +128,7 @@ func massAnnounce() {
 	var userId int64
 	var languageCode string
 
-	rows, err := db.Query("select \"userId\", \"languageCode\" from users")
+	rows, err := db.Query("select \"userId\", \"languageCode\" from users where \"languageCode\"='pt-br'")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -169,7 +169,7 @@ func main() {
 
 	go main1()
 	go main2()
-//	go massAnnounce()
+	go massAnnounce()
 
 	forever := make(chan bool)
 	<- forever
