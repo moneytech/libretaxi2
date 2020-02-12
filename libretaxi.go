@@ -138,7 +138,7 @@ func massAnnounce() {
 
 	for rows.Next() {
 		err := rows.Scan(&userId, &languageCode)
-		if err == nil && context.Repo.ShowCallout(userId, "welcome_2_0_message") {
+		if err == nil && context.Repo.ShowCallout(userId, "pt_br_translation_announcement") {
 
 			locale := getLocale(languageCode)
 			link := locale.Get("main.welcome_link")
@@ -152,7 +152,7 @@ func massAnnounce() {
 
 			log.Println("Mass sending to ", userId, languageCode)
 
-			context.Repo.DismissCallout(userId, "welcome_2_0_message")
+			context.Repo.DismissCallout(userId, "pt_br_translation_announcement")
 
 			rl.Take()
 		}
