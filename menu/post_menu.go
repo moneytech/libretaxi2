@@ -33,7 +33,9 @@ func (handler *PostMenuHandler) postToAdminChannel(text string) {
 }
 
 func (handler *PostMenuHandler) postToPublicChannel(text string) {
-	msg := tgbotapi.NewMessage(handler.context.Config.Public_Channel_Chat_Id, text + "\nVia 👉 @libretaxi_bot")
+	// TODO fix line below: Error sending Telegram message: Bad Request: can't parse entities: Can't find end of Italic entity at byte offset 148
+	// msg := tgbotapi.NewMessage(handler.context.Config.Public_Channel_Chat_Id, text + "\nVia 👉 @libretaxi_bot")
+	msg := tgbotapi.NewMessage(handler.context.Config.Public_Channel_Chat_Id, text)
 	if len(handler.user.Username) == 0 {
 		msg.ParseMode = "MarkdownV2"
 	}
