@@ -5,6 +5,7 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"libretaxi/context"
 	"libretaxi/objects"
+	"libretaxi/util"
 	"log"
 )
 
@@ -22,7 +23,10 @@ func (handler *InitMenuHandler) postToPublicChannel() {
 	text := ""
 
 	if len(handler.user.Username) == 0 {
-		userTextContact := fmt.Sprintf("[%s %s](tg://user?id=%d)", handler.user.FirstName, handler.user.LastName, handler.user.UserId)
+		userTextContact := fmt.Sprintf("[%s %s](tg://user?id=%d)",
+			util.EscapeMarkdown(handler.user.FirstName),
+			util.EscapeMarkdown(handler.user.LastName),
+			handler.user.UserId)
 		text = fmt.Sprintf("%s has joined LibreTaxi", userTextContact)
 	} else {
 		text = fmt.Sprintf("@%s has joined LibreTaxi", handler.user.Username)

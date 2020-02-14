@@ -6,6 +6,7 @@ import (
 	"libretaxi/context"
 	"libretaxi/objects"
 	"libretaxi/rabbit"
+	"libretaxi/util"
 	"libretaxi/validation"
 	"log"
 	"math/rand"
@@ -46,9 +47,15 @@ func (handler *PostMenuHandler) informUsersAround(lon float64, lat float64, text
 	textWithContacts := ""
 	via := user.Locale().Get("post_menu.via")
 
-	if len(handler.user.Username) == 0 {
-		userTextContact := fmt.Sprintf("[%s %s](tg://user?id=%d)", handler.user.FirstName, handler.user.LastName, handler.user.UserId)
-		textWithContacts = fmt.Sprintf("%s\n\n%s %s", text, via, userTextContact)
+	if len(handler.user.Username) == 0 { // use markdown
+		userTextContact := fmt.Sprintf("[%s %s](tg://user?id=%d)",
+			util.EscapeMarkdown(handler.user.FirstName),
+			util.EscapeMarkdown(handler.user.LastName),
+			handler.user.UserId)
+		textWithContacts = fmt.Sprintf("%s\n\n%s %s",
+			util.EscapeMarkdown(text),
+			util.EscapeMarkdown(via),
+			userTextContact)
 	} else {
 		textWithContacts = fmt.Sprintf("%s\n\n%s @%s", text, via, handler.user.Username)
 	}
