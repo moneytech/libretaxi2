@@ -1,3 +1,8 @@
+## LibreTaxi v2, ridesharing jailbreak, open-source Uber PoC
+
+See it in action: https://t.me/libretaxi_bot
+Public feed: https://t.me/libretaxi_all
+
 ## Running services
 
 ```
